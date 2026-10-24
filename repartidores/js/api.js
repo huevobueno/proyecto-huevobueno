@@ -45,6 +45,14 @@ const API = {
     return this.llamar({ action: "rendimiento", correo, periodo });
   },
 
+  misCompras(correo) {
+    return this.llamar({ action: "mis_compras", correo });
+  },
+
+  obtenerNotaRemision(folio) {
+    return this.llamar({ action: "obtener_nota_remision", folio });
+  },
+
   actualizar(idPedido, cambios) {
     return this.llamar({ action: "actualizar", idPedido, cambios });
   },

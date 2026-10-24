@@ -93,6 +93,12 @@ const modalDetalleCuerpo = document.getElementById("modal-detalle-cuerpo");
 const btnVolverDetalle  = document.getElementById("btn-volver-detalle");
 const detalleContenido  = document.getElementById("detalle-contenido");
 
+// --- Refs DOM Modal Nota de Remisión ---
+const modalNota        = document.getElementById("modal-nota");
+const btnCerrarModalN  = document.getElementById("btn-cerrar-modal-nota");
+const btnImprimirNota  = document.getElementById("btn-imprimir-nota");
+const modalNotaCuerpo  = document.getElementById("modal-nota-cuerpo");
+
 // ============================================================================
 // CONFIG DE PANTALLAS
 // ============================================================================
@@ -134,6 +140,23 @@ function formatearFechaCorta(isoStr) {
   if (!isoStr) return "";
   const d = new Date(isoStr);
   return d.toLocaleDateString("es-MX", { day: "2-digit", month: "short", year: "numeric" });
+}
+
+function formatearFechaLarga(isoStr) {
+  if (!isoStr) return "—";
+  const d = new Date(isoStr);
+  const meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
+}
+
+function escaparHTML(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 // ============================================================================
@@ -445,7 +468,6 @@ function renderizarListaColonias() {
     return;
   }
 
-  // Botón de engrane solo si hay ciudad seleccionada
   let botonPrecios = "";
   if (ciudadSeleccionada) {
     const ciudadData = ciudadesDisponibles.find(c => c.municipio === ciudadSeleccionada);
@@ -676,7 +698,6 @@ function renderizarCheckboxColonias(ciudad) {
     `;
   }).join("");
 
-  // Listener: mostrar/ocultar input de día al marcar/desmarcar
   listaCheckboxCols.querySelectorAll(".checkbox-colonia").forEach(cb => {
     cb.addEventListener("change", () => {
       const wrap = cb.closest(".checkbox-item-wrap");
@@ -734,12 +755,13 @@ if (formNuevoRep) {
     if (msgNuevoRep) msgNuevoRep.textContent = "";
 
     const val = selectCiudadRep.value;
-    const nombre   = document.getElementById("rep-nombre").value.trim();
-    const correo   = document.getElementById("rep-correo").value.trim();
-    const password = document.getElementById("rep-password").value.trim();
-    const whatsapp = document.getElementById("rep-whatsapp").value.trim();
+    const nombre    = document.getElementById("rep-nombre").value.trim();
+    const correo    = document.getElementById("rep-correo").value.trim();
+    const password  = document.getElementById("rep-password").value.trim();
+    const whatsapp  = document.getElementById("rep-whatsapp").value.trim();
+    const domicilio = document.getElementById("rep-domicilio").value.trim();
 
-    if (!nombre || !correo || !password || !whatsapp) {
+    if (!nombre || !correo || !password || !whatsapp || !domicilio) {
       if (msgNuevoRep) msgNuevoRep.textContent = "Completa todos los datos personales.";
       return;
     }
@@ -771,6 +793,7 @@ if (formNuevoRep) {
           colonia: c.colonia,
           codigoPostal: c.codigoPostal,
           diaEntrega: dia,
+          domicilio: domicilio,
           precioBlanco: c.precioBlanco,
           precioRojo: c.precioRojo
         });
@@ -798,7 +821,7 @@ if (formNuevoRep) {
 
     try {
       const r = await API.crearRepartidor({
-        nombre, correo, password, whatsapp,
+        nombre, correo, password, whatsapp, domicilio,
         colonias: coloniasSeleccionadas
       });
 
@@ -846,7 +869,7 @@ async function enviarProspecto(data) {
 }
 
 // ============================================================================
-// MODAL NUEVA COLONIA (agregar colonia a ciudad existente)
+// MODAL NUEVA COLONIA
 // ============================================================================
 function abrirModalColonia() {
   if (!modalColonia) return;
@@ -988,6 +1011,11 @@ function renderizarDetalle(r) {
       </label>
 
       <label class="campo">
+        <span>Domicilio (para nota de remisión)</span>
+        <input type="text" id="det-domicilio" value="${rep.domicilio || ""}" placeholder="Ej. Sayula, Jalisco, México">
+      </label>
+
+      <label class="campo">
         <span>Estado</span>
         <select id="det-estado">
           <option value="Activado" ${rep.estado === "Activado" ? "selected" : ""}>Activado</option>
@@ -1023,7 +1051,9 @@ function renderizarDetalle(r) {
     <div class="config-form">
       <div class="config-seccion-titulo">Últimas compras</div>
       ${compras.length === 0 ? `<p class="vacio">Sin compras registradas.</p>` :
-        compras.map(c => `
+        compras.map(c => {
+          const pagada = c.saldo <= 0;
+          return `
           <div class="compra-card">
             <div class="compra-card-info">
               <div class="compra-card-titulo">${formatearFechaCorta(c.fecha)}</div>
@@ -1032,29 +1062,26 @@ function renderizarDetalle(r) {
             </div>
             <div class="compra-card-montos">
               <div class="compra-card-total">${formatearMoneda(c.total)}</div>
-              ${c.saldo > 0 ? `<div class="compra-card-saldo">Debe ${formatearMoneda(c.saldo)}</div>` : `<div class="compra-card-pagado">Pagado</div>`}
+              ${pagada ? `<div class="compra-card-pagado">Pagado</div>` : `<div class="compra-card-saldo">Debe ${formatearMoneda(c.saldo)}</div>`}
             </div>
           </div>
-        `).join("")
+        `}).join("")
       }
     </div>
   `;
 
   detalleContenido.innerHTML = html;
 
-  // Guardar cambios
   const btnGuardarDatos = document.getElementById("btn-guardar-datos");
   if (btnGuardarDatos) {
     btnGuardarDatos.addEventListener("click", guardarDatosDetalle);
   }
 
-  // Agregar colonia
   const btnAgregarColonia = document.getElementById("btn-agregar-colonia-detalle");
   if (btnAgregarColonia) {
     btnAgregarColonia.addEventListener("click", mostrarFormAgregarColonia);
   }
 
-  // Botones de cada colonia
   detalleContenido.querySelectorAll(".colonia-detalle-card").forEach(card => {
     const municipio = card.dataset.municipio;
     const colonia = card.dataset.colonia;
@@ -1077,6 +1104,7 @@ async function guardarDatosDetalle() {
     nombre: document.getElementById("det-nombre").value.trim(),
     password: document.getElementById("det-password").value.trim(),
     whatsapp: document.getElementById("det-whatsapp").value.trim(),
+    domicilio: document.getElementById("det-domicilio").value.trim(),
     estado: document.getElementById("det-estado").value
   };
 
@@ -1250,7 +1278,7 @@ if (formCompraEmp) {
       const r = await API.guardarCompraEmprendedor(data);
       if (!r.ok) { msg.textContent = r.error || "No se pudo guardar."; return; }
 
-      alert("✅ Compra registrada. Total: " + formatearMoneda(r.total) + " · Saldo: " + formatearMoneda(r.saldo));
+      alert("✅ Compra registrada. Folio: " + (r.folio || "—") + " · Total: " + formatearMoneda(r.total));
       abrirComprasEmprendedor();
     } catch (err) {
       console.error(err);
@@ -1274,21 +1302,37 @@ async function cargarListaComprasEmprendedor() {
     const compras = r.compras || [];
     if (!compras.length) { cont.innerHTML = `<p class="vacio">Aún no hay compras.</p>`; return; }
 
-    cont.innerHTML = compras.map(c => `
-      <div class="compra-card">
-        <div class="compra-card-info">
-          <div class="compra-card-titulo">${c.emprendedor}</div>
-          <div class="compra-card-detalle">
-            ${formatearFechaCorta(c.fecha)} · ${c.cajasBlancas} blanca(s) · ${c.cajasRojas} roja(s)
+    cont.innerHTML = compras.map(c => {
+      const pagada = c.saldo <= 0;
+      const folioTxt = c.folio ? ` · ${c.folio}` : "";
+      const botonNota = pagada
+        ? `<button class="btn-ver-nota" data-folio="${c.folio}" title="Ver nota de remisión">
+             📄 Ver nota
+           </button>`
+        : `<div class="nota-no-disponible">Nota al liquidar</div>`;
+
+      return `
+        <div class="compra-card">
+          <div class="compra-card-info">
+            <div class="compra-card-titulo">${c.emprendedor}</div>
+            <div class="compra-card-detalle">
+              ${formatearFechaCorta(c.fecha)}${folioTxt} · ${c.cajasBlancas} blanca(s) · ${c.cajasRojas} roja(s)
+            </div>
+            ${c.notas ? `<div class="compra-card-notas">"${c.notas}"</div>` : ""}
+            ${pagada && c.folio ? botonNota : ""}
           </div>
-          ${c.notas ? `<div class="compra-card-notas">"${c.notas}"</div>` : ""}
+          <div class="compra-card-montos">
+            <div class="compra-card-total">${formatearMoneda(c.total)}</div>
+            ${pagada ? `<div class="compra-card-pagado">Pagado</div>` : `<div class="compra-card-saldo">Debe ${formatearMoneda(c.saldo)}</div>`}
+          </div>
         </div>
-        <div class="compra-card-montos">
-          <div class="compra-card-total">${formatearMoneda(c.total)}</div>
-          ${c.saldo > 0 ? `<div class="compra-card-saldo">Debe ${formatearMoneda(c.saldo)}</div>` : `<div class="compra-card-pagado">Pagado</div>`}
-        </div>
-      </div>
-    `).join("");
+      `;
+    }).join("");
+
+    // Listeners de los botones "Ver nota"
+    cont.querySelectorAll(".btn-ver-nota").forEach(btn => {
+      btn.addEventListener("click", () => verNotaRemision(btn.dataset.folio));
+    });
 
   } catch (err) {
     console.error(err);
@@ -1301,6 +1345,133 @@ if (btnVolverCE) btnVolverCE.addEventListener("click", () => {
   mostrarPantalla("config");
   volverMenuConfig();
 });
+
+// ============================================================================
+// NOTA DE REMISIÓN
+// ============================================================================
+async function verNotaRemision(folio) {
+  if (!folio) { alert("Compra sin folio."); return; }
+
+  modalNota.classList.remove("hidden");
+  modalNotaCuerpo.innerHTML = `<p class="cargando">Cargando nota...</p>`;
+
+  try {
+    const r = await API.obtenerNotaRemision(folio);
+    if (!r.ok) {
+      modalNotaCuerpo.innerHTML = `<p class="vacio">${r.error || "No se pudo cargar la nota."}</p>`;
+      return;
+    }
+
+    modalNotaCuerpo.innerHTML = renderizarNota(r.nota);
+  } catch (err) {
+    console.error(err);
+    modalNotaCuerpo.innerHTML = `<p class="vacio">Error de conexión.</p>`;
+  }
+}
+
+function renderizarNota(nota) {
+  const e = nota.emisor || {};
+  const rec = nota.receptor || {};
+  const conceptos = nota.conceptos || [];
+
+  const conceptosRows = conceptos.map(c => `
+    <tr>
+      <td>${escaparHTML(c.descripcion)}</td>
+      <td class="nota-col-num">${c.cantidad}</td>
+      <td class="nota-col-num">${formatearMoneda(c.precioUnitario)}</td>
+      <td class="nota-col-num">${formatearMoneda(c.importe)}</td>
+    </tr>
+  `).join("");
+
+  return `
+    <div class="nota-hoja">
+      <div class="nota-header">
+        <div class="nota-emisor">
+          <div class="nota-emisor-nombre">${escaparHTML(e.nombre)}</div>
+          <div class="nota-emisor-slogan">${escaparHTML(e.slogan)}</div>
+          <div class="nota-emisor-datos">
+            ${escaparHTML(e.direccion)}<br>
+            Tel: ${escaparHTML(e.telefono)}<br>
+            ${escaparHTML(e.correo)}
+          </div>
+        </div>
+        <div class="nota-titulo-bloque">
+          <div class="nota-tipo">NOTA DE REMISIÓN</div>
+          <div class="nota-folio">${escaparHTML(nota.folio)}</div>
+          <div class="nota-fecha">Fecha: ${formatearFechaLarga(nota.fecha)}</div>
+        </div>
+      </div>
+
+      <div class="nota-seccion">
+        <div class="nota-seccion-titulo">RECEPTOR</div>
+        <div class="nota-receptor">
+          <div><span class="nota-label">Nombre:</span> ${escaparHTML(rec.nombre)}</div>
+          <div><span class="nota-label">Domicilio:</span> ${escaparHTML(rec.domicilio)}</div>
+          <div><span class="nota-label">Teléfono:</span> ${escaparHTML(rec.telefono)}</div>
+        </div>
+      </div>
+
+      <div class="nota-seccion">
+        <table class="nota-tabla">
+          <thead>
+            <tr>
+              <th>Descripción</th>
+              <th class="nota-col-num">Cant.</th>
+              <th class="nota-col-num">P. Unit.</th>
+              <th class="nota-col-num">Importe</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${conceptosRows}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="nota-totales">
+        <div class="nota-total-linea">
+          <span class="nota-total-label">TOTAL:</span>
+          <span class="nota-total-valor">${formatearMoneda(nota.total)}</span>
+        </div>
+        <div class="nota-total-letra">
+          <strong>Total con letra:</strong> ${escaparHTML(nota.totalLetra)}
+        </div>
+      </div>
+
+      <div class="nota-pie">
+        <div class="nota-pie-fila">
+          <span><strong>Forma de pago:</strong> ${escaparHTML(nota.formaPago)}</span>
+          <span><strong>Estado:</strong> ${escaparHTML(nota.estado)}</span>
+        </div>
+        ${nota.notas ? `<div class="nota-pie-notas"><strong>Notas:</strong> ${escaparHTML(nota.notas)}</div>` : ""}
+      </div>
+
+      <div class="nota-firma">
+        <div class="nota-firma-linea"></div>
+        <div class="nota-firma-texto">${escaparHTML(e.nombre)}</div>
+        <div class="nota-firma-sub">Emisor</div>
+      </div>
+    </div>
+  `;
+}
+
+function cerrarModalNota() {
+  if (modalNota) modalNota.classList.add("hidden");
+  if (modalNotaCuerpo) modalNotaCuerpo.innerHTML = "";
+}
+
+if (btnCerrarModalN) btnCerrarModalN.addEventListener("click", cerrarModalNota);
+
+if (btnImprimirNota) {
+  btnImprimirNota.addEventListener("click", () => {
+    window.print();
+  });
+}
+
+if (modalNota) {
+  modalNota.addEventListener("click", (e) => {
+    if (e.target === modalNota) cerrarModalNota();
+  });
+}
 
 // ============================================================================
 // COMPRAS GRANJA
@@ -1376,7 +1547,7 @@ if (formCompraGra) {
       const r = await API.guardarCompraGranja(data);
       if (!r.ok) { msg.textContent = r.error || "No se pudo guardar."; return; }
 
-      alert("✅ Compra registrada. Total: " + formatearMoneda(r.total) + " · Saldo: " + formatearMoneda(r.saldo));
+      alert("✅ Compra registrada. Total: " + formatearMoneda(r.total));
       abrirComprasGranja();
     } catch (err) {
       console.error(err);
@@ -2137,7 +2308,6 @@ document.querySelectorAll(".config-opcion").forEach(btn => {
       configCiudadesVista.classList.add("hidden");
       resetearFormNuevoRep();
 
-      // Cargar ciudades dinámicamente
       await cargarCiudadesAdmin();
       poblarSelectCiudades("rep-ciudad", false);
 

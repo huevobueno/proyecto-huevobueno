@@ -232,6 +232,11 @@
                 <span>WhatsApp *</span>
                 <input type="tel" id="rep-whatsapp" required placeholder="523325110628">
               </label>
+
+              <label class="campo">
+                <span>Domicilio *</span>
+                <input type="text" id="rep-domicilio" required placeholder="Ej. Sayula, Jalisco, México">
+              </label>
             </div>
 
             <div id="rep-ciudad-libre" class="hidden">
@@ -529,7 +534,7 @@
 
         <div class="chips" id="chips-rendimiento-periodo">
           <button class="chip" data-periodo="semana">Esta semana</button>
-          <button class="chip activo" data-periodo="mes">Este mes</button>
+          <button class="chip" data-periodo="mes">Este mes</button>
           <button class="chip" data-periodo="mes_anterior">Mes anterior</button>
           <button class="chip" data-periodo="todos">Todos</button>
         </div>
@@ -711,6 +716,26 @@
     <div class="modal-contenido">
       <button class="modal-cerrar" id="btn-cerrar-modal-detalle" aria-label="Cerrar">×</button>
       <div id="modal-detalle-cuerpo"></div>
+    </div>
+  </div>
+
+  <!-- MODAL: NOTA DE REMISIÓN -->
+  <div id="modal-nota" class="modal hidden">
+    <div class="modal-nota-wrapper">
+      <div class="modal-nota-acciones">
+        <button class="btn-nota-imprimir" id="btn-imprimir-nota">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"/>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+            <rect x="6" y="14" width="12" height="8"/>
+          </svg>
+          Imprimir / PDF
+        </button>
+        <button class="btn-nota-cerrar" id="btn-cerrar-modal-nota" aria-label="Cerrar">×</button>
+      </div>
+      <div id="modal-nota-cuerpo" class="nota-cuerpo">
+        <p class="cargando">Cargando nota...</p>
+      </div>
     </div>
   </div>
 

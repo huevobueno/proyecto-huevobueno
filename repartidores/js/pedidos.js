@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * PEDIDOS - Lógica principal del repartidor
+ * PEDIDOS - Lógica principal del emprendedor
  * ============================================================================
  */
 
@@ -20,6 +20,9 @@ let periodoHistorial  = "semana";
 let filtroBusquedaHist = "";
 let rendimientoActual  = null;
 let periodoRendimiento = "mes";
+let comprasActuales   = null;
+let filtroMisCompras  = "todas";
+let compraModalActual = null;
 
 // --- Referencias DOM: header ---
 const headerTitulo    = document.getElementById("header-titulo");
@@ -43,6 +46,11 @@ const inputBusquedaRutas = document.getElementById("input-busqueda-rutas");
 const chipsCaja     = document.getElementById("chips-caja");
 const cajaContenido = document.getElementById("caja-contenido");
 
+// --- Referencias DOM: pantalla mis compras ---
+const misComprasResumen = document.getElementById("mis-compras-resumen");
+const misComprasLista   = document.getElementById("mis-compras-lista");
+const chipsMisCompras   = document.getElementById("chips-mis-compras");
+
 // --- Referencias DOM: pantalla historial ---
 const chipsHistorial     = document.getElementById("chips-historial");
 const historialContenido = document.getElementById("historial-contenido");
@@ -52,10 +60,21 @@ const inputBusquedaHist  = document.getElementById("input-busqueda-historial");
 const chipsRendimiento     = document.getElementById("chips-rendimiento");
 const rendimientoContenido = document.getElementById("rendimiento-contenido");
 
-// --- Referencias DOM: modal detalle ---
+// --- Referencias DOM: modal detalle pedido ---
 const modalDetalle   = document.getElementById("modal-detalle");
 const modalCuerpo    = document.getElementById("modal-cuerpo");
 const btnCerrarModal = document.getElementById("btn-cerrar-modal");
+
+// --- Referencias DOM: modal detalle compra ---
+const modalCompra       = document.getElementById("modal-compra");
+const modalCompraCuerpo = document.getElementById("modal-compra-cuerpo");
+const btnCerrarModalCompra = document.getElementById("btn-cerrar-modal-compra");
+
+// --- Referencias DOM: modal nota de remisión ---
+const modalNota        = document.getElementById("modal-nota");
+const btnCerrarModalN  = document.getElementById("btn-cerrar-modal-nota");
+const btnImprimirNota  = document.getElementById("btn-imprimir-nota");
+const modalNotaCuerpo  = document.getElementById("modal-nota-cuerpo");
 
 // --- Referencias DOM: drawer ---
 const drawerOverlay   = document.getElementById("drawer-overlay");
@@ -87,8 +106,12 @@ const PANTALLAS = {
     subtitulo: () => "Tu comportamiento de ventas"
   },
   caja: {
-    titulo: "Caja y ganancias",
+    titulo: "Mis finanzas",
     subtitulo: () => "Tus ingresos y compras"
+  },
+  "mis-compras": {
+    titulo: "Mis compras",
+    subtitulo: () => "Tus compras a HuevoBueno"
   },
   historial: {
     titulo: "Historial de pedidos",
@@ -113,6 +136,7 @@ const ICONOS = {
   enviar: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>`,
   whatsapp: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>`,
   caja: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`,
+  carrito: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`,
   paquete: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`,
   huevera: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect x="6" y="34" width="52" height="18" rx="4" fill="#D2B48C"/>
@@ -150,9 +174,28 @@ function formatearFecha(iso) {
   } catch (e) { return "—"; }
 }
 
+function formatearFechaLarga(iso) {
+  if (!iso) return "—";
+  try {
+    const d = new Date(iso);
+    const meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+    return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
+  } catch (e) { return "—"; }
+}
+
 function formatearMoneda(n) {
   const num = Number(n) || 0;
   return "$" + num.toLocaleString("es-MX");
+}
+
+function escaparHTML(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 function infoEstado(estado) {
@@ -387,12 +430,12 @@ async function refrescarRutas() {
 }
 
 // ============================================================================
-// CAJA
+// MIS FINANZAS
 // ============================================================================
 async function cargarCaja() {
   if (!sesionActual) return;
 
-  cajaContenido.innerHTML = `<p class="cargando">Cargando caja...</p>`;
+  cajaContenido.innerHTML = `<p class="cargando">Cargando finanzas...</p>`;
 
   try {
     const r = await API.caja(sesionActual.correo);
@@ -488,6 +531,319 @@ function cambiarPeriodoCaja(periodo) {
   });
 
   renderizarCaja();
+}
+
+// ============================================================================
+// MIS COMPRAS
+// ============================================================================
+async function cargarMisCompras() {
+  if (!sesionActual) return;
+
+  misComprasResumen.innerHTML = `<p class="cargando">Cargando...</p>`;
+  misComprasLista.innerHTML = `<p class="cargando">Cargando compras...</p>`;
+
+  try {
+    const r = await API.misCompras(sesionActual.correo);
+
+    if (!r.ok) {
+      misComprasResumen.innerHTML = `<p class="vacio">Error: ${r.error || "no se pudo cargar."}</p>`;
+      misComprasLista.innerHTML = "";
+      return;
+    }
+
+    comprasActuales = r;
+    renderizarMisCompras();
+
+  } catch (error) {
+    console.error(error);
+    misComprasResumen.innerHTML = `<p class="vacio">Error de conexión.</p>`;
+    misComprasLista.innerHTML = "";
+  }
+}
+
+function renderizarMisCompras() {
+  if (!comprasActuales) return;
+
+  const resumen = comprasActuales.resumen || {};
+  const compras = comprasActuales.compras || [];
+
+  const totales = {
+    todas: compras.length,
+    pagadas: compras.filter(c => c.estado === "pagada").length,
+    con_saldo: compras.filter(c => c.estado === "con_saldo").length
+  };
+  chipsMisCompras.querySelectorAll(".chip").forEach(chip => {
+    const f = chip.dataset.filtro;
+    let numSpan = chip.querySelector(".chip-num");
+    if (!numSpan) {
+      numSpan = document.createElement("span");
+      numSpan.className = "chip-num";
+      chip.appendChild(numSpan);
+    }
+    numSpan.textContent = totales[f] || 0;
+    chip.classList.toggle("activo", chip.dataset.filtro === filtroMisCompras);
+  });
+
+  const saldo = resumen.saldoPendiente || 0;
+  const claseSaldo = saldo > 0 ? "caja-card-balance negativo" : "caja-card-balance positivo";
+
+  misComprasResumen.innerHTML = `
+    <div class="caja-card">
+      <p class="caja-card-titulo">Total comprado</p>
+      <p class="caja-card-valor">${formatearMoneda(resumen.totalComprado || 0)}</p>
+      <p class="caja-card-sub">${resumen.numCompras || 0} compra(s) registrada(s)</p>
+    </div>
+    <div class="caja-card ${claseSaldo}">
+      <p class="caja-card-titulo">Saldo pendiente</p>
+      <p class="caja-card-valor">${formatearMoneda(saldo)}</p>
+      <p class="caja-card-sub">${saldo > 0 ? "Tienes compras por pagar" : "Estás al día con HuevoBueno"}</p>
+    </div>
+  `;
+
+  const filtradas = compras.filter(c => {
+    if (filtroMisCompras === "todas") return true;
+    if (filtroMisCompras === "pagadas") return c.estado === "pagada";
+    if (filtroMisCompras === "con_saldo") return c.estado === "con_saldo";
+    return true;
+  });
+
+  if (!filtradas.length) {
+    misComprasLista.innerHTML = `<p class="vacio">No hay compras en esta categoría.</p>`;
+    return;
+  }
+
+  misComprasLista.innerHTML = filtradas.map((c, idx) => {
+    const cajasTxt = [];
+    if (c.cajasBlancas > 0) cajasTxt.push(`${c.cajasBlancas} blanca(s)`);
+    if (c.cajasRojas > 0) cajasTxt.push(`${c.cajasRojas} roja(s)`);
+
+    const estadoClase = c.estado === "pagada" ? "compra-pagada" : "compra-saldo";
+    const estadoTxt = c.estado === "pagada" ? "Pagada" : `Debes ${formatearMoneda(c.saldo)}`;
+
+    return `
+      <div class="compra-card-compra" data-idx="${idx}">
+        <div class="compra-card-compra-info">
+          <div class="compra-card-compra-fecha">${formatearFechaLarga(c.fecha)}</div>
+          <div class="compra-card-compra-detalle">${cajasTxt.join(" · ")}</div>
+          ${c.notas ? `<div class="compra-card-compra-notas">"${c.notas}"</div>` : ""}
+        </div>
+        <div class="compra-card-compra-montos">
+          <div class="compra-card-compra-total">${formatearMoneda(c.total)}</div>
+          <div class="compra-card-compra-estado ${estadoClase}">${estadoTxt}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  misComprasLista.querySelectorAll(".compra-card-compra").forEach(card => {
+    card.addEventListener("click", () => {
+      const idx = Number(card.dataset.idx);
+      abrirModalCompra(filtradas[idx]);
+    });
+  });
+}
+
+function cambiarFiltroMisCompras(filtro) {
+  filtroMisCompras = filtro;
+
+  chipsMisCompras.querySelectorAll(".chip").forEach(c => {
+    c.classList.toggle("activo", c.dataset.filtro === filtro);
+  });
+
+  renderizarMisCompras();
+}
+
+function abrirModalCompra(compra) {
+  if (!compra || !modalCompra) return;
+
+  compraModalActual = compra;
+
+  const cajasBlancas = compra.cajasBlancas > 0
+    ? `<div class="modal-fila"><span class="label">Cajas blancas</span><span class="valor">${compra.cajasBlancas} × ${formatearMoneda(compra.precioBlanco)}</span></div>`
+    : "";
+  const cajasRojas = compra.cajasRojas > 0
+    ? `<div class="modal-fila"><span class="label">Cajas rojas</span><span class="valor">${compra.cajasRojas} × ${formatearMoneda(compra.precioRojo)}</span></div>`
+    : "";
+
+  const saldoHTML = compra.saldo > 0
+    ? `<div class="modal-fila"><span class="label"><strong>Saldo pendiente</strong></span><span class="valor" style="color:#856404;"><strong>${formatearMoneda(compra.saldo)}</strong></span></div>`
+    : `<div class="modal-fila"><span class="label">Saldo pendiente</span><span class="valor" style="color:#155724;">Pagada ✓</span></div>`;
+
+  const botonNota = compra.folio && compra.saldo <= 0
+    ? `<button class="btn-ver-nota-grande" id="btn-ver-nota-modal">
+         📄 Ver nota de remisión
+       </button>`
+    : "";
+
+  modalCompraCuerpo.innerHTML = `
+    <h2 class="modal-titulo">Compra</h2>
+    <p class="modal-sub">${formatearFechaLarga(compra.fecha)}${compra.folio ? " · " + compra.folio : ""}</p>
+
+    <div class="modal-seccion">
+      <div class="modal-fila"><span class="label">Fecha</span><span class="valor">${formatearFecha(compra.fecha)}</span></div>
+    </div>
+
+    <div class="modal-seccion">
+      ${cajasBlancas}
+      ${cajasRojas}
+    </div>
+
+    <div class="modal-seccion">
+      <div class="modal-fila"><span class="label"><strong>Total</strong></span><span class="valor"><strong>${formatearMoneda(compra.total)}</strong></span></div>
+      <div class="modal-fila"><span class="label">Pagado</span><span class="valor">${formatearMoneda(compra.montoPagado)}</span></div>
+      ${saldoHTML}
+    </div>
+
+    ${compra.notas ? `
+      <div class="modal-seccion">
+        <div class="modal-fila"><span class="label">Notas</span><span class="valor">${compra.notas}</span></div>
+      </div>
+    ` : ""}
+
+    ${botonNota}
+  `;
+
+  modalCompra.classList.remove("hidden");
+
+  const btnNotaModal = document.getElementById("btn-ver-nota-modal");
+  if (btnNotaModal) {
+    btnNotaModal.addEventListener("click", () => {
+      cerrarModalCompra();
+      verNotaRemision(compra.folio);
+    });
+  }
+}
+
+function cerrarModalCompra() {
+  if (modalCompra) modalCompra.classList.add("hidden");
+  compraModalActual = null;
+}
+
+// ============================================================================
+// NOTA DE REMISIÓN
+// ============================================================================
+async function verNotaRemision(folio) {
+  if (!folio) { alert("Compra sin folio."); return; }
+
+  modalNota.classList.remove("hidden");
+  modalNotaCuerpo.innerHTML = `<p class="cargando">Cargando nota...</p>`;
+
+  try {
+    const r = await API.obtenerNotaRemision(folio);
+    if (!r.ok) {
+      modalNotaCuerpo.innerHTML = `<p class="vacio">${r.error || "No se pudo cargar la nota."}</p>`;
+      return;
+    }
+
+    modalNotaCuerpo.innerHTML = renderizarNota(r.nota);
+  } catch (err) {
+    console.error(err);
+    modalNotaCuerpo.innerHTML = `<p class="vacio">Error de conexión.</p>`;
+  }
+}
+
+function renderizarNota(nota) {
+  const e = nota.emisor || {};
+  const rec = nota.receptor || {};
+  const conceptos = nota.conceptos || [];
+
+  const conceptosRows = conceptos.map(c => `
+    <tr>
+      <td>${escaparHTML(c.descripcion)}</td>
+      <td class="nota-col-num">${c.cantidad}</td>
+      <td class="nota-col-num">${formatearMoneda(c.precioUnitario)}</td>
+      <td class="nota-col-num">${formatearMoneda(c.importe)}</td>
+    </tr>
+  `).join("");
+
+  return `
+    <div class="nota-hoja">
+      <div class="nota-header">
+        <div class="nota-emisor">
+          <div class="nota-emisor-nombre">${escaparHTML(e.nombre)}</div>
+          <div class="nota-emisor-slogan">${escaparHTML(e.slogan)}</div>
+          <div class="nota-emisor-datos">
+            ${escaparHTML(e.direccion)}<br>
+            Tel: ${escaparHTML(e.telefono)}<br>
+            ${escaparHTML(e.correo)}
+          </div>
+        </div>
+        <div class="nota-titulo-bloque">
+          <div class="nota-tipo">NOTA DE REMISIÓN</div>
+          <div class="nota-folio">${escaparHTML(nota.folio)}</div>
+          <div class="nota-fecha">Fecha: ${formatearFechaLarga(nota.fecha)}</div>
+        </div>
+      </div>
+
+      <div class="nota-seccion">
+        <div class="nota-seccion-titulo">RECEPTOR</div>
+        <div class="nota-receptor">
+          <div><span class="nota-label">Nombre:</span> ${escaparHTML(rec.nombre)}</div>
+          <div><span class="nota-label">Domicilio:</span> ${escaparHTML(rec.domicilio)}</div>
+          <div><span class="nota-label">Teléfono:</span> ${escaparHTML(rec.telefono)}</div>
+        </div>
+      </div>
+
+      <div class="nota-seccion">
+        <table class="nota-tabla">
+          <thead>
+            <tr>
+              <th>Descripción</th>
+              <th class="nota-col-num">Cant.</th>
+              <th class="nota-col-num">P. Unit.</th>
+              <th class="nota-col-num">Importe</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${conceptosRows}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="nota-totales">
+        <div class="nota-total-linea">
+          <span class="nota-total-label">TOTAL:</span>
+          <span class="nota-total-valor">${formatearMoneda(nota.total)}</span>
+        </div>
+        <div class="nota-total-letra">
+          <strong>Total con letra:</strong> ${escaparHTML(nota.totalLetra)}
+        </div>
+      </div>
+
+      <div class="nota-pie">
+        <div class="nota-pie-fila">
+          <span><strong>Forma de pago:</strong> ${escaparHTML(nota.formaPago)}</span>
+          <span><strong>Estado:</strong> ${escaparHTML(nota.estado)}</span>
+        </div>
+        ${nota.notas ? `<div class="nota-pie-notas"><strong>Notas:</strong> ${escaparHTML(nota.notas)}</div>` : ""}
+      </div>
+
+      <div class="nota-firma">
+        <div class="nota-firma-linea"></div>
+        <div class="nota-firma-texto">${escaparHTML(e.nombre)}</div>
+        <div class="nota-firma-sub">Emisor</div>
+      </div>
+    </div>
+  `;
+}
+
+function cerrarModalNota() {
+  if (modalNota) modalNota.classList.add("hidden");
+  if (modalNotaCuerpo) modalNotaCuerpo.innerHTML = "";
+}
+
+if (btnCerrarModalN) btnCerrarModalN.addEventListener("click", cerrarModalNota);
+
+if (btnImprimirNota) {
+  btnImprimirNota.addEventListener("click", () => {
+    window.print();
+  });
+}
+
+if (modalNota) {
+  modalNota.addEventListener("click", (e) => {
+    if (e.target === modalNota) cerrarModalNota();
+  });
 }
 
 // ============================================================================
@@ -630,7 +986,6 @@ function renderizarRendimiento() {
   const md  = rendimientoActual.mejorDia || { dia: null, promedio: 0 };
   const sem = rendimientoActual.semanas || [];
 
-  // Card principal con cambio
   let cambioHTML = "";
   if (cp.cambioPorcentaje !== null && cp.cambioPorcentaje !== undefined) {
     const clase = cp.cambioPorcentaje > 0 ? "up" : (cp.cambioPorcentaje < 0 ? "down" : "flat");
@@ -643,7 +998,6 @@ function renderizarRendimiento() {
     cambioHTML = `<span class="rend-cambio flat">Sin ventas en este período</span>`;
   }
 
-  // Tipo de huevo
   const totalTH = th.blanco.ingresos + th.rojo.ingresos;
   const pctBlanco = totalTH > 0 ? Math.round((th.blanco.ingresos / totalTH) * 100) : 0;
   const pctRojo   = totalTH > 0 ? Math.round((th.rojo.ingresos / totalTH) * 100) : 0;
@@ -677,7 +1031,6 @@ function renderizarRendimiento() {
     `;
   }
 
-  // Top colonias
   let topColoniasHTML = "";
   if (top.length === 0) {
     topColoniasHTML = `<p class="rend-vacio">Sin ventas registradas.</p>`;
@@ -700,7 +1053,6 @@ function renderizarRendimiento() {
     }).join("");
   }
 
-  // Colonias muertas
   let coloniasMuertasHTML = "";
   if (cm.total === 0) {
     coloniasMuertasHTML = `<p class="rend-vacio">Todas tus colonias tuvieron ventas. ¡Excelente!</p>`;
@@ -722,7 +1074,6 @@ function renderizarRendimiento() {
     `;
   }
 
-  // Mejor día
   let mejorDiaHTML = "";
   if (!md.dia) {
     mejorDiaHTML = `<p class="rend-vacio">Aún no hay suficientes datos.</p>`;
@@ -738,7 +1089,6 @@ function renderizarRendimiento() {
     `;
   }
 
-  // Últimas 4 semanas
   let semanasHTML = "";
   if (!sem.length || sem.every(s => s.total === 0)) {
     semanasHTML = `<p class="rend-vacio">Aún no hay datos suficientes.</p>`;
@@ -983,7 +1333,7 @@ function cerrarDrawer() {
 }
 
 // ============================================================================
-// ACCIONES DEL MODAL
+// ACCIONES DEL MODAL PEDIDO
 // ============================================================================
 async function accionarEstado(nuevoEstado) {
   const p = pedidoModalActual;
@@ -1094,7 +1444,7 @@ function accionarUbicacionModal() {
 }
 
 // ============================================================================
-// ACCIÓN DEL BOTÓN ACTUALIZAR
+// REFRESCAR PANTALLA
 // ============================================================================
 function refrescarPantallaActual() {
   if (pantallaActual === "pedidos") {
@@ -1103,6 +1453,8 @@ function refrescarPantallaActual() {
     refrescarRutas();
   } else if (pantallaActual === "caja") {
     cargarCaja();
+  } else if (pantallaActual === "mis-compras") {
+    cargarMisCompras();
   } else if (pantallaActual === "historial") {
     cargarHistorial();
   } else if (pantallaActual === "rendimiento") {
@@ -1166,6 +1518,14 @@ chipsCaja.addEventListener("click", (e) => {
   cambiarPeriodoCaja(chip.dataset.periodo);
 });
 
+if (chipsMisCompras) {
+  chipsMisCompras.addEventListener("click", (e) => {
+    const chip = e.target.closest(".chip");
+    if (!chip) return;
+    cambiarFiltroMisCompras(chip.dataset.filtro);
+  });
+}
+
 chipsHistorial.addEventListener("click", (e) => {
   const chip = e.target.closest(".chip");
   if (!chip) return;
@@ -1201,6 +1561,10 @@ document.querySelector(".drawer-panel").addEventListener("click", (e) => {
     cerrarDrawer();
     mostrarPantalla("caja");
     cargarCaja();
+  } else if (accion === "mis-compras") {
+    cerrarDrawer();
+    mostrarPantalla("mis-compras");
+    cargarMisCompras();
   } else if (accion === "historial") {
     cerrarDrawer();
     mostrarPantalla("historial");
@@ -1252,6 +1616,16 @@ modalDetalle.addEventListener("click", (e) => {
   if (e.target === modalDetalle) cerrarModal();
 });
 
+if (btnCerrarModalCompra) {
+  btnCerrarModalCompra.addEventListener("click", cerrarModalCompra);
+}
+
+if (modalCompra) {
+  modalCompra.addEventListener("click", (e) => {
+    if (e.target === modalCompra) cerrarModalCompra();
+  });
+}
+
 // ============================================================================
 // INICIALIZACIÓN
 // ============================================================================
@@ -1278,20 +1652,15 @@ function procesarPedidoDeURL() {
 
     if (!pedidoId) return;
 
-    // Buscar el pedido en la lista cargada
     const p = pedidosActuales.find(x => x.id === pedidoId);
 
     if (!p) {
       console.log("Pedido no encontrado: " + pedidoId);
-      // Limpiar el parámetro de la URL para no confundir
       window.history.replaceState({}, "", window.location.pathname);
       return;
     }
 
-    // Abrir el modal con ese pedido
     abrirModalDetalle(pedidoId);
-
-    // Limpiar el parámetro de la URL
     window.history.replaceState({}, "", window.location.pathname);
 
   } catch (e) {

@@ -286,13 +286,7 @@ body {
   margin-bottom: 8px;
 }
 
-.card-valor {
-  font-size: 30px;
-  font-weight: 800;
-  color: #1F2937;
-  line-height: 1.1;
-}
-
+.card-valor { font-size: 30px; font-weight: 800; color: #1F2937; line-height: 1.1; }
 .card-sub { font-size: 12.5px; color: #6B7280; margin-top: 4px; }
 
 .card-metricas {
@@ -659,7 +653,6 @@ body {
   flex-shrink: 0;
 }
 
-/* Header de ciudades con botón registrar */
 .config-ciudades-header {
   display: flex;
   justify-content: space-between;
@@ -688,7 +681,6 @@ body {
 .btn-registrar-ciudad:active { transform: scale(0.95); }
 .btn-registrar-ciudad svg { width: 14px; height: 14px; }
 
-/* Header de precios de ciudad */
 .ciudad-precios-header {
   background: #FFFFFF;
   border-radius: 12px;
@@ -973,6 +965,36 @@ select:focus { border-color: #1B5E20; }
   border-radius: 20px;
 }
 
+/* Botón "Ver nota" dentro de las compras */
+.btn-ver-nota {
+  margin-top: 6px;
+  background: #FFFFFF;
+  color: #1B5E20;
+  border: 1.5px solid #1B5E20;
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.btn-ver-nota:active { background: #E8F5E9; transform: scale(0.96); }
+
+.nota-no-disponible {
+  margin-top: 6px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #856404;
+  background: #FFF3CD;
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 20px;
+}
+
 /* ============================================================================
    FEED DE ACTIVIDAD (Ganancias)
    ============================================================================ */
@@ -1014,7 +1036,6 @@ select:focus { border-color: #1B5E20; }
    RENDIMIENTO
    ============================================================================ */
 .rend-barra-h { display: flex; flex-direction: column; gap: 4px; }
-
 .rend-barra-h-header { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; }
 .rend-barra-h-label { font-weight: 600; color: #374151; }
 .rend-barra-h-valor { font-weight: 700; color: #1F2937; }
@@ -1210,4 +1231,281 @@ body.modo-admin .btn-verde {
   background: #F5B041;
   color: #1B5E20;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+/* ============================================================================
+   NOTA DE REMISIÓN — MODAL
+   ============================================================================ */
+.modal-nota-wrapper {
+  background: #FFFFFF;
+  width: 100%;
+  max-width: 900px;
+  border-radius: 16px;
+  padding: 0;
+  max-height: 92vh;
+  overflow-y: auto;
+  position: relative;
+  animation: scaleIn 0.2s ease-out;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.modal-nota-acciones {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #E5E7EB;
+  position: sticky;
+  top: 0;
+  background: #FFFFFF;
+  z-index: 2;
+  border-radius: 16px 16px 0 0;
+}
+
+.btn-nota-imprimir {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #1B5E20;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 12.5px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.btn-nota-imprimir:active { transform: scale(0.96); }
+.btn-nota-imprimir svg { width: 15px; height: 15px; }
+
+.btn-nota-cerrar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: #F8D7DA;
+  color: #C62828;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: background 0.15s;
+}
+.btn-nota-cerrar:active { background: #F5C6CB; }
+
+.nota-cuerpo { padding: 20px; background: #F5F6F8; }
+
+/* ============================================================================
+   NOTA DE REMISIÓN — HOJA
+   ============================================================================ */
+.nota-hoja {
+  background: #FFFFFF;
+  padding: 24px 28px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  max-width: 820px;
+  margin: 0 auto;
+  font-size: 12.5px;
+  color: #1F2937;
+  line-height: 1.5;
+}
+
+.nota-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid #1B5E20;
+  margin-bottom: 14px;
+}
+
+.nota-emisor { flex: 1; min-width: 0; }
+.nota-emisor-nombre { font-size: 20px; font-weight: 800; color: #1B5E20; letter-spacing: -0.3px; }
+.nota-emisor-slogan { font-size: 12px; color: #6B7280; font-style: italic; margin-bottom: 8px; }
+.nota-emisor-datos { font-size: 11.5px; color: #374151; line-height: 1.5; }
+
+.nota-titulo-bloque { text-align: right; flex-shrink: 0; }
+.nota-tipo { font-size: 14px; font-weight: 800; color: #1B5E20; letter-spacing: 1px; }
+.nota-folio { font-size: 18px; font-weight: 800; color: #1F2937; margin: 4px 0; }
+.nota-fecha { font-size: 11.5px; color: #6B7280; }
+
+.nota-seccion { margin-bottom: 14px; }
+
+.nota-seccion-titulo {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #1B5E20;
+  letter-spacing: 1px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #E5E7EB;
+  margin-bottom: 8px;
+}
+
+.nota-receptor { font-size: 12.5px; line-height: 1.7; }
+.nota-label { font-weight: 700; color: #6B7280; display: inline-block; min-width: 80px; }
+
+.nota-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.nota-tabla thead th {
+  background: #1B5E20;
+  color: #FFFFFF;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 8px 10px;
+}
+
+.nota-tabla tbody td {
+  padding: 10px;
+  border-bottom: 1px solid #E5E7EB;
+  vertical-align: top;
+}
+
+.nota-tabla tbody tr:last-child td { border-bottom: 2px solid #1B5E20; }
+
+.nota-col-num { text-align: right; white-space: nowrap; }
+
+.nota-totales {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.nota-total-linea {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 8px 14px;
+  background: #E8F5E9;
+  border-radius: 8px;
+}
+
+.nota-total-label { font-size: 13px; font-weight: 800; color: #1B5E20; letter-spacing: 0.5px; }
+.nota-total-valor { font-size: 20px; font-weight: 800; color: #1B5E20; }
+
+.nota-total-letra {
+  font-size: 11.5px;
+  color: #374151;
+  font-style: italic;
+  text-align: right;
+  max-width: 420px;
+}
+
+.nota-pie {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #E5E7EB;
+  font-size: 12px;
+}
+
+.nota-pie-fila { display: flex; gap: 24px; flex-wrap: wrap; }
+.nota-pie-fila span { color: #374151; }
+.nota-pie-notas { margin-top: 8px; color: #6B7280; font-style: italic; }
+
+.nota-firma {
+  margin-top: 40px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.nota-firma-linea {
+  width: 220px;
+  border-top: 1.5px solid #1F2937;
+  margin-bottom: 6px;
+}
+
+.nota-firma-texto { font-size: 12.5px; font-weight: 700; color: #1F2937; }
+.nota-firma-sub { font-size: 11px; color: #6B7280; }
+
+/* ============================================================================
+   @media print — Solo imprimir la nota
+   ============================================================================ */
+@media print {
+  body * { visibility: hidden; }
+
+  #modal-nota,
+  #modal-nota .modal-nota-wrapper,
+  #modal-nota .nota-cuerpo,
+  #modal-nota .nota-hoja,
+  #modal-nota .nota-hoja * {
+    visibility: visible;
+  }
+
+  #modal-nota {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    background: #FFFFFF;
+    padding: 0;
+    margin: 0;
+    inset: auto;
+    display: block !important;
+  }
+
+  #modal-nota .modal-nota-wrapper {
+    max-width: 100%;
+    box-shadow: none;
+    border-radius: 0;
+    max-height: none;
+    overflow: visible;
+    animation: none;
+  }
+
+  #modal-nota .modal-nota-acciones {
+    display: none !important;
+  }
+
+  #modal-nota .nota-cuerpo {
+    padding: 0;
+    background: #FFFFFF;
+  }
+
+  #modal-nota .nota-hoja {
+    border: none;
+    border-radius: 0;
+    padding: 20mm 15mm;
+    max-width: 100%;
+    page-break-inside: avoid;
+  }
+
+  @page {
+    size: letter landscape;
+    margin: 10mm;
+  }
+}
+
+/* ============================================================================
+   RESPONSIVE — Nota en móvil
+   ============================================================================ */
+@media (max-width: 700px) {
+  .modal-nota-wrapper { max-width: 100%; max-height: 95vh; border-radius: 12px; }
+  .nota-cuerpo { padding: 12px; }
+  .nota-hoja { padding: 16px 14px; font-size: 11.5px; }
+  .nota-emisor-nombre { font-size: 17px; }
+  .nota-folio { font-size: 15px; }
+  .nota-tipo { font-size: 12px; }
+  .nota-tabla thead th { font-size: 10px; padding: 6px 8px; }
+  .nota-tabla tbody td { padding: 8px; font-size: 11px; }
+  .nota-total-valor { font-size: 17px; }
+  .nota-total-letra { font-size: 10.5px; }
+  .nota-firma { margin-top: 28px; }
+  .nota-firma-linea { width: 180px; }
 }

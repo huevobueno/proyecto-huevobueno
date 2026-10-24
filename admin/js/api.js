@@ -72,6 +72,7 @@ const API = {
       correo: data.correo,
       password: data.password,
       whatsapp: data.whatsapp,
+      domicilio: data.domicilio,
       colonias: data.colonias
     });
   },
@@ -233,6 +234,14 @@ const API = {
       action: "historial",
       correo: correo || "",
       periodo: periodo || "semana"
+    });
+  },
+
+  // === NOTA DE REMISIÓN ===
+  obtenerNotaRemision(folio) {
+    return this.llamar({
+      action: "obtener_nota_remision",
+      folio: folio
     });
   }
 };
