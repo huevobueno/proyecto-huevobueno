@@ -138,6 +138,10 @@ async function cargarReferidos() {
       
       if (data.ok) {
         if (data.referidos.length > 0) {
+          // --- NUEVO: LEER EL MONTO DINÁMICO DEL BACKEND ---
+          const montoBono = data.bonoReferido || 10;
+          // -------------------------------------------------
+
           contenedor.innerHTML = `
             <div style="text-align:center; margin-bottom: 15px; font-weight: bold; color: #0E5C3F; font-size: 1.1rem;">
               Has invitado a ${data.total} persona(s) 🎉
@@ -150,7 +154,7 @@ async function cargarReferidos() {
                       <span class="concepto" style="font-weight:bold; display:block;">${r.nombre}</span>
                       <span class="fecha" style="display:block; font-size:0.8rem; color:#888;">Se unió el ${fecha}</span>
                   </div>
-                  <div style="color: #25D366; font-weight: bold;">+ $20.00</div>
+                  <div style="color: #25D366; font-weight: bold;">+ $${montoBono.toFixed(2)}</div>
               </div>`;
           });
         } else {
