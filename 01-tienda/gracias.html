@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¡Pedido confirmado! · HuevoBueno</title>
+<meta name="theme-color" content="#F5B301">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,900&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/gracias.css">
+</head>
+<body class="gracias-page">
+<header class="header">
+  <div class="wrap">
+    <a class="logo" href="index.html">
+      <img src="img/logo.png" alt="HuevoBueno">
+      <span>HuevoBueno</span>
+    </a>
+    <span class="header-tag">✅ Confirmado</span>
+  </div>
+</header>
+<main class="wrap">
+  <div class="gracias-wrap">
+    
+    <!-- TARJETA DE RECIBO / CONFIRMACIÓN -->
+    <div class="confirm-card">
+      <div class="confirm-check">✓</div>
+      <h1>¡Listo <span id="nombre-cliente">amigo</span>!</h1>
+      <p class="folio">Folio <strong id="exito-folio">HB-...</strong></p>
+      
+      <p class="sub" style="margin-bottom: 15px; font-weight: 600; color: #0E5C3F;">Tu huevo ya va en camino. Aquí están los detalles de tu entrega:</p>
+
+      <!-- NUEVO RESUMEN DE COMPRA -->
+      <div style="background: #F8F9FA; border-radius: 12px; padding: 15px; text-align: left; margin-bottom: 20px; border: 1px solid #eee;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem;">
+          <span style="color: #666;">Destino:</span>
+          <strong id="resumen-destino" style="color: #333;">-</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem;">
+          <span style="color: #666;">Dirección:</span>
+          <strong id="resumen-direccion" style="color: #333; text-align: right; max-width: 60%;">-</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.95rem;">
+          <span style="color: #666;">Día de entrega:</span>
+          <strong id="resumen-dia" style="color: #F39C12;">-</strong>
+        </div>
+        
+        <div style="border-top: 1px dashed #ccc; padding-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+          <span style="color: #0E5C3F; font-weight: 800;">Total a pagar:</span>
+          <strong id="exito-total" style="font-size: 1.4rem; color: #0E5C3F;">$75</strong>
+        </div>
+        <p style="font-size: 0.8rem; color: #888; text-align: right; margin-top: 5px;">Pagas en efectivo al recibir.</p>
+      </div>
+
+    </div>
+
+    <!-- PAGO AL RECIBIR - REASEGURO -->
+    <div class="trust-card">
+      <div class="trust-icon">🛡️</div>
+      <div class="trust-text">
+        <strong>Garantía HuevoBueno</strong>
+        <span>Ves tu cartera con plástico transparente, revisas que no haya rotos y pagas. Si hay uno roto, te dejamos otra cartera completa. Así trabajamos en la región.</span>
+      </div>
+    </div>
+
+    <!-- UPSELL PWA -->
+    <div class="pwa-card">
+      <div class="pwa-top">
+        <span class="pwa-kicker">SOLO PARA QUIEN YA COMPRÓ HOY</span>
+        <h2>¿Quieres que tu próximo huevo te salga GRATIS?</h2>
+      </div>
+      <div class="pwa-como">
+        <div class="como-item">
+          <div class="como-icon">🎁</div>
+          <div>
+            <strong>Tu compra de hoy ya liberó tu primer saldo</strong>
+            <span>Tu número de WhatsApp ya tiene dinero esperándote. Si no activas tu cuenta hoy, ese saldo de bienvenida se queda congelado.</span>
+          </div>
+        </div>
+        <div class="como-item">
+          <div class="como-icon">⚡</div>
+          <div>
+            <strong>Sin registros ni contraseñas</strong>
+            <span>Tu cuenta se activa al instante con el mismo WhatsApp con el que hiciste tu pedido. Un clic y tu saldo queda reclamado.</span>
+          </div>
+        </div>
+      </div>
+      <button class="btn-pwa-real" id="btn-pwa" style="margin-top: 15px;">
+        <span>ACTIVAR MI CUENTA Y VER MI SALDO →</span>
+        <small>Se abre directo con tu WhatsApp. Tu saldo te está esperando.</small>
+      </button>
+    </div>
+    
+    <div class="confianza-extra">
+      <span>Entregas programadas</span>
+      <span>·</span>
+      <span>Soporte por WhatsApp</span>
+      <span>·</span>
+      <span>+127 pedidos esta semana</span>
+    </div>
+  </div>
+</main>
+<footer class="footer">
+  <div class="wrap">
+    <p>© <span id="year"></span> HuevoBueno · 25 años de granjas a tu mesa en 72h</p>
+  </div>
+</footer>
+<script src="js/config.js"></script>
+<script src="js/gracias.js"></script>
+</body>
+</html>

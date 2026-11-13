@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HuevoBueno · De $120 a $75, sin cargar, sin huevo viejo</title>
+<meta name="description" content="La cartera de 30 huevos que en la tiendita te cuesta $120, aquí $75. Fresco máximo 3 días de postura, entrega a domicilio en Sayula, Zacoalco, Atoyac, Techaluta y Teocuitatlán. Pago en efectivo al recibir.">
+<meta name="theme-color" content="#F5B301">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,900&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+<header class="header">
+  <div class="wrap">
+    <a class="logo" href="#">
+      <img src="img/logo.png" alt="HuevoBueno">
+      <span>HuevoBueno</span>
+    </a>
+    <span class="header-tag">🥚 Entrega hoy en tu ruta</span>
+  </div>
+</header>
+<main class="wrap">
+  <!-- HERO DE VENTA -->
+  <section class="hero-venta">
+    <div>
+      <span class="eyebrow">Directo de granja · 25 años de respaldo</span>
+      <h1>En la tiendita 1 huevo te cuesta $4. <em>Aquí te cuesta $2.50 y te lo llevan.</em></h1>
+      <p class="lead">María llega a la tiendita y paga <strong>$4 por 1 huevo</strong>. Si pide un kilo, paga <strong>$42 por 16 huevos ($2.62 c/u)</strong>. Contigo se lleva <strong>30 huevos por $85 ($2.50 c/u)</strong>, frescos de máximo 3 días y sin cargar.</p>
+      
+      <div class="senelo-grid">
+        <div class="senelo-card malo">
+          <span class="senelo-label malo">❌ EN LA TIENDITA - SUELTO</span>
+          <div class="senelo-title">1 huevo suelto</div>
+          <div class="senelo-precio">$4.00 <span>/pieza</span></div>
+          <div class="senelo-det">Tú cargas, se te rompe en la bolsa, es huevo viejo de hasta 15 días.</div>
+        </div>
+        <div class="senelo-card malo">
+          <span class="senelo-label medio">❌ EN LA TIENDITA - A GRANEL</span>
+          <div class="senelo-title">1 kilo (16 pzas)</div>
+          <div class="senelo-precio senelo-tachado">$42 <span>/ $2.62 c/u</span></div>
+          <div class="senelo-det">Pagaste $42 y solo te dieron 16. Sigue siendo huevo almacenado.</div>
+        </div>
+        <div class="senelo-card bueno">
+          <span class="senelo-badge">MÁS BARATO POR PIEZA</span>
+          <span class="senelo-label bueno">✅ HUEVOBUENO - GANADORA</span>
+          <div class="senelo-title">Cartera 30 huevos</div>
+          <div class="senelo-precio">$85 <span>= $2.50 c/u</span></div>
+          <div class="senelo-det">30 huevos frescos, máx 3 días de postura, empaque transparente con garantía anti-roto. Te lo llevamos.</div>
+        </div>
+      </div>
+      <div class="senelo-ahorro-fuerte">💰 Te ahorras $45 por cartera vs comprar suelto. En un mes, son $180 que se quedan en tu bolsa.</div>
+      <div class="trust-bar">
+        <span>✓ Pago en efectivo al recibir</span>
+        <span>✓ Transferencia también</span>
+        <span>✓ Sin registro</span>
+      </div>
+    </div>
+    <div class="hero-img">
+      <img src="img/conos-huevos.jpg" alt="Huevo fresco cartera 30 piezas empaque transparente">
+    </div>
+  </section>
+  <div class="tienda-grid" id="bloque-tienda">
+    <!-- IZQUIERDA: PRODUCTOS + PRUEBA -->
+    <div>
+      <section class="card">
+        <h2 class="card-title">🥚 1. Elige cuánto quieres ahorrar</h2>
+        
+        <div class="producto-card activo" id="card-carteras">
+          <div class="prod-info">
+            <div class="prod-icon"><img src="img/conos-huevos.jpg" alt=""></div>
+            <div>
+              <div class="prod-title">Cartera de 30 huevos <span class="badge-ahorro">MÁS PEDIDA</span></div>
+              <div class="prod-sub">Fresca, empaque transparente</div>
+              <div class="prod-price" id="lbl-precio-cartera">$85 <small>c/u</small></div>
+            </div>
+          </div>
+          <div class="qty-control">
+            <button type="button" class="qty-btn" onclick="cambiarCantidad('carteras', -1)">−</button>
+            <input type="number" id="cant-carteras" value="1" readonly>
+            <button type="button" class="qty-btn" onclick="cambiarCantidad('carteras', 1)">+</button>
+          </div>
+        </div>
+        <div class="producto-card" id="card-cajas">
+          <div class="prod-info">
+            <div class="prod-icon"><img src="img/cajas-huevos.jpg" alt=""></div>
+            <div>
+              <div class="prod-title">Caja completa 360 huevos</div>
+              <div class="prod-sub">Para fondas y consumo grande</div>
+              <div class="prod-price ahorro" id="lbl-precio-caja">$850 <small>c/u</small></div>
+            </div>
+          </div>
+          <div class="qty-control">
+            <button type="button" class="qty-btn" onclick="cambiarCantidad('cajas', -1)">−</button>
+            <input type="number" id="cant-cajas" value="0" readonly>
+            <button type="button" class="qty-btn" onclick="cambiarCantidad('cajas', 1)">+</button>
+          </div>
+        </div>
+        <div class="garantia">
+          <div class="garantia-icon">🛡️</div>
+          <div>
+            <strong>Garantía HuevoBueno: Sin rotos.</strong><br>
+            Te entregamos la cartera envuelta en plástico. Ves en el momento si hay uno roto. Si hay uno roto, no te dejo 29. Te cambio la cartera completa por otra de 30 nuevos. Sin preguntas.
+          </div>
+        </div>
+      </section>
+      <section class="card">
+        <h2 class="card-title">💬 Lo que dicen en tu colonia</h2>
+        <div class="testi-grid">
+          <div class="testi">
+            <strong>Ramón · Sayula - Caja 360</strong>
+            "La verdad sí dudaba porque está más barato que en el centro, pero ya vi que sí es de calidad. Todo perfecto, ni uno solo roto."
+          </div>
+          <div class="testi">
+            <strong>Alondra · Zacoalco - Hogar</strong>
+            "Muchísimas gracias por traerme el huevo tan rápido, de verdad me salvaste. Con los niños no podía ni salir a la tienda."
+          </div>
+          <div class="testi">
+            <strong>Jorge · Repartidor Zacoalco</strong>
+            "Me sirvió muchísimo que me lo trajeras temprano porque los fines de semana vuelo con las cenas y en el mercado me lo querían dar más caro."
+          </div>
+          <div class="testi" style="background:#F0FAF4; border-color:#C8E6C9;">
+            <strong>¿De dónde viene?</strong>
+            Granjas con más de 25 años. Huevo puesto hoy, máximo 3 días en tu casa. No bodega de 15 días.
+          </div>
+        </div>
+      </section>
+    </div>
+    <!-- DERECHA: FORMULARIO -->
+    <form id="pedido-form">
+      <section class="card">
+        <h2 class="card-title">📍 2. ¿A dónde te lo llevamos?</h2>
+        
+        <div class="field">
+          <label>Ciudad *</label>
+          <select id="ciudad" required>
+            <option value="" disabled selected>Selecciona tu ciudad</option>
+            <option value="Sayula">Sayula</option>
+            <option value="Zacoalco">Zacoalco</option>
+            <option value="Atoyac">Atoyac</option>
+            <option value="Techaluta">Techaluta</option>
+            <option value="Teocuitatlán">Teocuitatlán</option>
+          </select>
+        </div>
+        <div id="mensaje-entrega" class="alerta-entrega hidden">
+          📦 Tu pedido se entregará el próximo <strong id="dia-texto"></strong>. Te avisamos por WhatsApp cuando el repartidor sale.
+        </div>
+        <div class="field">
+          <label>Nombre completo *</label>
+          <input type="text" id="nombre" required placeholder="Ej. Juan Pérez">
+        </div>
+        <div class="field">
+          <label>WhatsApp (10 dígitos) *</label>
+          <input type="tel" id="tel" required pattern="[0-9]{10}" maxlength="10" placeholder="10 dígitos sin espacios">
+        </div>
+        <div class="field">
+          <label>Colonia o sector *</label>
+          <input type="text" id="colonia" required placeholder="Ej. Centro, Villas del Sur">
+        </div>
+        <div class="field">
+          <label>Dirección exacta + referencias *</label>
+          <input type="text" id="direccion" required placeholder="Calle, número, entre calles, color de casa">
+        </div>
+      </section>
+      <div class="resumen-pago">
+        <div>
+          <span>Total a pagar:</span>
+          <small>Pagas en efectivo o transferencia al recibir</small>
+          <div id="ahorro-display" class="ahorro-line hidden"></div>
+        </div>
+        <strong id="total-display">$75</strong>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" id="btn-submit">
+        <span id="btn-text">SÍ, QUIERO MI HUEVO FRESCO EL LUNES</span>
+      </button>
+      <p style="text-align:center; font-size:0.8rem; color:#6B7280; margin-top:10px;">Sin registro. Sin anticipo. Si no estás, reprogramamos para tu ruta. No pierdes tu pedido.</p>
+    </form>
+  </div>
+  
+  <!-- PANTALLA ÉXITO + PWA -->
+  <div id="pantalla-exito" class="hidden">
+    <div class="success-card">
+      <div class="success-icon">✅</div>
+      <h2>¡Pedido confirmado!</h2>
+      <p>Tu folio es <strong id="exito-folio"></strong></p>
+      <p>Un repartidor de HuevoBueno te avisará por WhatsApp el día de tu ruta.</p>
+      <div class="exito-total">
+        Pagarás <strong id="exito-total"></strong> en efectivo al recibir.
+      </div>
+      <div class="pwa-box">
+        <h3>¿Quieres tu próxima cartera GRATIS? 🥚</h3>
+        <p>Instala tu app HuevoBueno. Mira videos cortos, gana saldo y canjea por huevo. Nuestros clientes ya canjean 1 cartera cada 2 semanas sin pagar.</p>
+        
+        <!-- BOTÓN CORREGIDO: El ID será controlado por tienda.js -->
+        <button id="btn-activar-cuenta" class="btn btn-pwa" style="background:#111; color:#fff; border:none; width:100%; padding:15px; border-radius:8px; font-weight:bold; cursor:pointer;">
+           ACTIVAR MI CUENTA Y VER MI SALDO →
+           <br><span style="font-size:0.75rem; font-weight:normal; opacity:0.8;">Se abre directo con tu WhatsApp. Tu saldo te está esperando.</span>
+        </button>
+        
+      </div>
+    </div>
+  </div>
+</main>
+<footer class="footer">
+  <div class="wrap">
+    <p>© <span id="year"></span> HuevoBueno · Sur de Jalisco · De la granja a tu casa en 72h</p>
+    <p>Sayula · Zacoalco · Atoyac · Techaluta · Teocuitatlán de Corona</p>
+  </div>
+</footer>
+<script src="js/config.js"></script>
+<script src="js/tienda.js"></script>
+</body>
+</html>
