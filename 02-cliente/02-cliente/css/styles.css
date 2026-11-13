@@ -1,0 +1,181 @@
+/* ==========================================
+   1. RESET Y CONFIGURACIÓN GENERAL
+   ========================================== */
+* {
+  margin: 0; padding: 0; box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+body { background-color: #F8F9FA; color: #333333; overflow-x: hidden; }
+h1, h2, h3, h4, .saldo-total { font-family: 'Fraunces', serif; font-weight: 900; }
+.hidden { display: none !important; }
+.text-center { text-align: center; }
+.mt-10 { margin-top: 10px; }
+
+/* ==========================================
+   2. PANTALLAS DE AUTENTICACIÓN
+   ========================================== */
+.pantalla-auth { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; background: #fff; }
+.auth-card { width: 100%; max-width: 400px; text-align: center; }
+.auth-logo { width: 80px; margin-bottom: 15px; }
+.auth-card h1 { font-size: 1.8rem; margin-bottom: 5px; }
+.auth-sub { color: #666666; margin-bottom: 25px; font-size: 0.95rem; }
+.field { margin-bottom: 15px; text-align: left; }
+.field input { width: 100%; padding: 14px; border: 1px solid #DDD; border-radius: 8px; font-size: 1rem; background: #F9F9F9; outline: none; }
+.field input:focus { border-color: #F39C12; background: #fff; }
+.btn { display: inline-block; padding: 14px 20px; border-radius: 8px; font-weight: 700; font-size: 1rem; text-align: center; border: none; cursor: pointer; transition: opacity 0.2s; }
+.btn:active { opacity: 0.8; }
+.btn-primary { background: #F39C12; color: #fff; }
+.btn-wa { background: #25D366; color: #fff; }
+.btn-block { width: 100%; display: block; }
+.btn-grande { padding: 18px; font-size: 1.1rem; }
+.btn-sm { padding: 8px 12px; font-size: 0.85rem; width: auto; }
+.link-btn { background: none; border: none; color: #F39C12; font-weight: 600; cursor: pointer; font-size: 0.9rem; }
+.code-inputs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+.code-inputs input { width: 45px; height: 55px; text-align: center; font-size: 1.5rem; font-weight: bold; border: 2px solid #DDD; border-radius: 8px; outline: none; background: #F9F9F9; }
+.code-inputs input:focus { border-color: #F39C12; background: #fff; }
+
+/* ==========================================
+   3. ESTRUCTURA APP PRINCIPAL
+   ========================================== */
+.app-principal { padding-bottom: 80px; }
+.header { background: #F39C12; padding: 15px 20px; position: sticky; top: 0; z-index: 100; }
+.header-content { display: flex; justify-content: space-between; align-items: center; }
+.logo { display: flex; align-items: center; gap: 8px; color: #fff; font-weight: 800; font-size: 1.1rem; }
+.logo img { width: 30px; border-radius: 50%; background: #fff; padding: 2px; }
+.saldo-mini { background: #fff; color: #333; padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 800; margin-left: 10px; }
+.menu-btn { background: rgba(255,255,255,0.2); border: none; color: #fff; font-size: 1.5rem; padding: 5px 12px; border-radius: 8px; cursor: pointer; }
+.footer-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; }
+.nav-btn { background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #999; font-size: 0.7rem; font-weight: 600; cursor: pointer; }
+.nav-btn span { font-size: 1.3rem; }
+.nav-btn.active { color: #F39C12; }
+.screen { display: none; padding: 20px; }
+.screen.active { display: block; animation: fadeIn 0.3s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.section-title { font-size: 1.3rem; margin-bottom: 10px; }
+.section-sub { color: #666666; font-size: 0.9rem; margin-bottom: 15px; }
+.saldo-card { text-align: center; border-top: 4px solid #F39C12; }
+.saldo-total { font-size: 3rem; color: #F39C12; margin: 5px 0; }
+.label { font-size: 0.85rem; color: #666666; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+.subtext { font-size: 0.85rem; color: #666666; }
+.qty-control { display: flex; align-items: center; gap: 10px; background: #F0F0F0; border-radius: 20px; padding: 5px; }
+.qty-btn { width: 30px; height: 30px; border-radius: 50%; border: none; background: #fff; font-size: 1.2rem; font-weight: bold; box-shadow: 0 1px 3px rgba(0,0,0,0.1); cursor: pointer; }
+.qty-control input { border: none; background: transparent; font-weight: bold; font-size: 1rem; }
+.resumen-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #EEE; font-size: 0.95rem; }
+.resumen-row:last-child { border-bottom: none; }
+.resumen-row span { color: #666666; }
+
+/* ==========================================
+   4. MENÚ LATERAL (SIDEBAR)
+   ========================================== */
+.sidebar { position: fixed; top: 0; right: -100%; width: 280px; height: 100vh; background: #fff; z-index: 1000; transition: right 0.3s ease-in-out; box-shadow: -2px 0 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+.sidebar.active { right: 0; }
+.sidebar-header { background: #F39C12; padding: 20px; color: #fff; display: flex; justify-content: space-between; align-items: center; }
+.sidebar-header h3 { font-size: 1.1rem; margin: 0; color: #fff; }
+.close-btn { background: none; border: none; color: #fff; font-size: 2rem; cursor: pointer; line-height: 1; }
+.sidebar-list { list-style: none; padding: 20px 0; flex: 1; }
+.sidebar-list li { padding: 15px 20px; font-weight: 600; color: #333; cursor: pointer; border-bottom: 1px solid #F5F5F5; }
+.sidebar-list li:active { background: #F9F9F9; }
+.sidebar-list li.logout { color: #C62828; margin-top: auto; border-bottom: none; }
+.sidebar-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 999; }
+
+/* ==========================================
+   5. MODALES (ESTILO BOTTOM SHEET - DESDE ABAJO)
+   ========================================== */
+.modal {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.6); z-index: 2000; 
+  display: flex; align-items: flex-end; justify-content: center; /* Alineado abajo */
+}
+.modal-content {
+  background: #fff; 
+  border-radius: 24px 24px 0 0; /* Bordes superiores redondeados */
+  padding: 25px; 
+  width: 100%; max-width: 500px;
+  max-height: 85vh; 
+  overflow-y: auto; 
+  position: relative; 
+  box-shadow: 0 -5px 20px rgba(0,0,0,0.15);
+  animation: slideUp 0.3s ease-out;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+/* Barrita superior del modal (Handle) */
+.modal-content::before {
+  content: ''; display: block; width: 40px; height: 4px;
+  background: #DDD; border-radius: 2px; margin: -10px auto 15px auto;
+}
+.modal-close { position: absolute; top: 15px; right: 15px; background: #F0F0F0; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; }
+
+/* Billetera (Movimientos) */
+#lista-billetera .movimiento {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 15px 0; border-bottom: 1px solid #F0F0F0;
+}
+#lista-billetera .movimiento:last-child { border-bottom: none; }
+#lista-billetera .movimiento .concepto { font-weight: 700; font-size: 0.95rem; color: #333; display: block; }
+#lista-billetera .movimiento .fecha { font-size: 0.75rem; color: #888; margin-top: 3px; display: block;}
+#lista-billetera .movimiento .monto { font-weight: 800; font-size: 1.1rem; }
+#lista-billetera .movimiento .monto.ingreso { color: #0E5C3F; }
+#lista-billetera .movimiento .monto.egreso { color: #C62828; }
+
+/* Contenedor de video por defecto (Recompensas) */
+.video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin-bottom: 15px; border-radius: 8px; background: #000; }
+.video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+/* ==========================================
+   6. CARRUSELES CON FLECHAS
+   ========================================== */
+.carrusel-wrapper { position: relative; display: flex; align-items: center; }
+.carrusel-horizontal {
+  display: flex; overflow-x: auto; gap: 15px; padding-bottom: 15px; padding-left: 5px; padding-right: 5px;
+  scroll-snap-type: x mandatory; scrollbar-width: none; scroll-behavior: smooth; flex: 1;
+}
+.carrusel-horizontal::-webkit-scrollbar { display: none; }
+
+/* Flechas de navegación */
+.btn-flecha {
+  background: rgba(255,255,255,0.9); border: 1px solid #EEE; border-radius: 50%;
+  width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; color: #333; cursor: pointer; position: absolute; z-index: 10;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.btn-flecha.izq { left: -10px; }
+.btn-flecha.der { right: -10px; }
+
+/* Tarjetas de Recompensas */
+.card-recompensa { min-width: 80%; scroll-snap-align: start; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: flex; flex-direction: column; }
+.card-recompensa img { width: 100%; height: 160px; object-fit: cover; }
+.card-recompensa .info { padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+.card-recompensa .info h4 { margin: 0; font-size: 1rem; }
+.card-recompensa .info button { width: 100%; padding: 10px; }
+
+/* Tarjetas de Miniseries (Verticales) */
+.card-episodio { min-width: 110px; max-width: 110px; scroll-snap-align: start; position: relative; cursor: pointer; }
+.card-episodio img { width: 100%; aspect-ratio: 9 / 16; object-fit: cover; border-radius: 8px; display: block; }
+.card-episodio .badge-ep { position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,0.7); color: #fff; font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; }
+.card-episodio .icono-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 36px; height: 36px; background: rgba(0,0,0,0.6); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1rem; pointer-events: none; }
+.card-episodio .vistas { position: absolute; bottom: 8px; left: 8px; color: #fff; font-size: 0.7rem; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
+
+/* ==========================================
+   7. MODO TIKTOK (Miniseries)
+   ========================================== */
+.modal.modo-tiktok { background: #000 !important; padding: 0 !important; align-items: stretch; }
+.modal.modo-tiktok .modal-content { background: #000 !important; color: white; width: 100%; max-width: 100%; height: 100vh; max-height: 100vh; border-radius: 0; padding: 0; display: flex; flex-direction: column; overflow: hidden; animation: none; }
+.modal.modo-tiktok .modal-content::before { display: none; }
+.modal.modo-tiktok .modal-close { color: white; z-index: 9999; top: 15px; right: 15px; font-size: 32px; position: absolute; background: transparent; }
+.modal.modo-tiktok #video-titulo { position: absolute; top: 20px; left: 20px; color: white; z-index: 9999; font-size: 1.1rem; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
+.modal.modo-tiktok .video-container { position: absolute !important; top: 0; left: 0; width: 100%; height: 100% !important; padding-bottom: 0 !important; border-radius: 0 !important; margin: 0 !important; }
+.modal.modo-tiktok #zona-capitulo { position: absolute; bottom: 0; left: 0; width: 100%; padding: 60px 20px 30px 20px; z-index: 9999; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%); pointer-events: none; }
+.modal.modo-tiktok #zona-capitulo button, .modal.modo-tiktok #zona-capitulo p { pointer-events: auto; }
+
+/* ==========================================
+   8. BOTÓN INSTALAR APP (En Inicio)
+   ========================================== */
+.btn-instalar-app {
+  background: #E8F5E9; color: #2E7D32; padding: 12px; border-radius: 10px;
+  width: 100%; border: 1px solid #C8E6C9; font-weight: 700;
+  display: flex; justify-content: center; align-items: center; gap: 8px;
+  margin-bottom: 15px; cursor: pointer; font-size: 0.95rem;
+}
