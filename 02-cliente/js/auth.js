@@ -27,7 +27,7 @@ async function iniciarProcesoOTP(tel, forzar = false) {
         document.querySelector('#code-inputs input').focus();
       }
     } else { alert(data.error); }
-  } catch (e) { alert("Error de conexión"); }
+  } catch (e) { alert("Error de conexión al enviar OTP"); }
   finally { if(btnIngresar) { btnIngresar.innerText = "Enviar código por WhatsApp"; btnIngresar.disabled = false; } }
 }
 
@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-toggle-otp').addEventListener('click', () => { document.getElementById('login-options').classList.add('hidden'); document.getElementById('login-otp').classList.remove('hidden'); });
   document.getElementById('btn-toggle-pass').addEventListener('click', () => { document.getElementById('login-otp').classList.add('hidden'); document.getElementById('login-options').classList.remove('hidden'); });
 
+  // --- MODIFICACIÓN AQUÍ: LOGIN CON POST ---
   document.getElementById('form-login-pass').addEventListener('submit', async (e) => {
     e.preventDefault();
     const usuario = document.getElementById('login-usuario').value.trim();
@@ -57,8 +58,13 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.innerText = "Entrando..."; btn.disabled = true;
 
     try {
-      const res = await fetch(`${CONFIG.API_URL}?action=login_cliente_password&usuario=${encodeURIComponent(usuario)}&password=${encodeURIComponent(pass)}`);
+      const res = await fetch(CONFIG.API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: "login_cliente_password", usuario: usuario, password: pass })
+      });
       const data = await res.json();
+      
       if (data.ok) {
         window.HB_STATE.clienteId = data.id; 
         window.HB_STATE.saldoActual = data.saldo; 
@@ -68,9 +74,13 @@ document.addEventListener('DOMContentLoaded', () => {
         window.HB_STATE.permiteRetiro = data.permiteRetiro || false;
         entrarAlDashboard();
       } else { alert(data.error); }
-    } catch (e) { alert("Error de conexión"); }
+    } catch (e) { 
+      console.error(e);
+      alert("Error de conexión"); 
+    }
     finally { btn.innerText = "Entrar con Contraseña"; btn.disabled = false; }
   });
+  // -----------------------------------------
 
   document.getElementById('form-login').addEventListener('submit', (e) => {
     e.preventDefault(); iniciarProcesoOTP(document.getElementById('input-tel').value.trim());
@@ -94,9 +104,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const ciudad = localStorage.getItem('hb_cliente_ciudad_temp') || "Sayula";
       const colonia = localStorage.getItem('hb_cliente_colonia_temp') || "";
       const direccion = localStorage.getItem('hb_cliente_direccion_temp') || "";
-      const refParam = new URLSearchParams(window.location.search).get('ref') || "";
+      const refParam = localStorage.getItem('hb_cliente_ref_temp') || "";
 
-      const url = `${CONFIG.API_URL}?action=verificar_codigo_cliente&tel=${window.HB_STATE.telefono}&codigo=${codigo}&nombre=${encodeURIComponent(window.HB_STATE.nombre)}&ciudad=${encodeURIComponent(ciudad)}&colonia=${encodeURIComponent(colonia)}&direccion=${encodeURIComponent(direccion)}&ref=${refParam}`;
+      const url = `${CONFIG.API_URL}?action=verificar_codigo_cliente&tel=${window.HB_STATE.telefono}&codigo=${codigo}&nombre=${encodeURIComponent(window.HB_STATE.nombre)}&ciudad=${encodeURIComponent(ciudad)}&colonia=${encodeURIComponent(colonia)}&direccion=${encodeURIComponent(direccion)}&ref=${encodeURIComponent(refParam)}`;
       
       const res = await fetch(url);
       const data = await res.json();
@@ -123,14 +133,16 @@ document.addEventListener('DOMContentLoaded', () => {
     let ciudadParam = urlParams.get('ciudad') || "Sayula";
     let coloniaParam = urlParams.get('colonia') || "";
     let direccionParam = urlParams.get('direccion') || "";
+    let refParam = urlParams.get('ref') || "";
     
     localStorage.setItem('hb_cliente_ciudad_temp', ciudadParam);
     localStorage.setItem('hb_cliente_colonia_temp', coloniaParam);
     localStorage.setItem('hb_cliente_direccion_temp', direccionParam);
+    localStorage.setItem('hb_cliente_ref_temp', refParam);
+    
     window.HB_STATE.telefono = telParam;
     window.HB_STATE.nombre = nombreParam;
     
-    // ¡AQUÍ ESTÁ LA MAGIA! Limpiamos la URL para que no vuelva a pedir el OTP si recargan
     window.history.replaceState({}, document.title, window.location.pathname);
 
     iniciarProcesoOTP(telParam, true);
