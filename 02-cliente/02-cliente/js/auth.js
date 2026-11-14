@@ -27,7 +27,7 @@ async function iniciarProcesoOTP(tel, forzar = false) {
         document.querySelector('#code-inputs input').focus();
       }
     } else { alert(data.error); }
-  } catch (e) { alert("Error de conexión al enviar OTP"); }
+  } catch (e) { alert("Error de conexión al solicitar OTP"); }
   finally { if(btnIngresar) { btnIngresar.innerText = "Enviar código por WhatsApp"; btnIngresar.disabled = false; } }
 }
 
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-toggle-otp').addEventListener('click', () => { document.getElementById('login-options').classList.add('hidden'); document.getElementById('login-otp').classList.remove('hidden'); });
   document.getElementById('btn-toggle-pass').addEventListener('click', () => { document.getElementById('login-otp').classList.add('hidden'); document.getElementById('login-options').classList.remove('hidden'); });
 
-  // --- MODIFICACIÓN AQUÍ: LOGIN CON POST ---
+  // --- CAMBIO A POST PARA EVITAR BLOQUEO CORS EN GITHUB ---
   document.getElementById('form-login-pass').addEventListener('submit', async (e) => {
     e.preventDefault();
     const usuario = document.getElementById('login-usuario').value.trim();
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     finally { btn.innerText = "Entrar con Contraseña"; btn.disabled = false; }
   });
-  // -----------------------------------------
+  // --------------------------------------------------------
 
   document.getElementById('form-login').addEventListener('submit', (e) => {
     e.preventDefault(); iniciarProcesoOTP(document.getElementById('input-tel').value.trim());
