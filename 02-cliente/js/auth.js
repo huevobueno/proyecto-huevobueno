@@ -49,7 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-toggle-otp').addEventListener('click', () => { document.getElementById('login-options').classList.add('hidden'); document.getElementById('login-otp').classList.remove('hidden'); });
   document.getElementById('btn-toggle-pass').addEventListener('click', () => { document.getElementById('login-otp').classList.add('hidden'); document.getElementById('login-options').classList.remove('hidden'); });
 
+<<<<<<< Updated upstream
   // --- MODIFICACIÓN AQUÍ: LOGIN CON POST ---
+=======
+  // --- LOGIN CON POST ---
+>>>>>>> Stashed changes
   document.getElementById('form-login-pass').addEventListener('submit', async (e) => {
     e.preventDefault();
     const usuario = document.getElementById('login-usuario').value.trim();
@@ -134,6 +138,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let coloniaParam = urlParams.get('colonia') || "";
     let direccionParam = urlParams.get('direccion') || "";
     let refParam = urlParams.get('ref') || "";
+<<<<<<< Updated upstream
+=======
+    let autoLogin = urlParams.get('auto_login') === 'true';
+>>>>>>> Stashed changes
     
     localStorage.setItem('hb_cliente_ciudad_temp', ciudadParam);
     localStorage.setItem('hb_cliente_colonia_temp', coloniaParam);
@@ -145,8 +153,22 @@ document.addEventListener('DOMContentLoaded', () => {
     
     window.history.replaceState({}, document.title, window.location.pathname);
 
-    iniciarProcesoOTP(telParam, true);
-
+    if (autoLogin) {
+        // MAGIA: Si viene de la confirmación de WhatsApp, buscamos sus datos y entramos directo
+        fetch(`${CONFIG.API_URL}?action=solicitar_codigo_cliente&tel=${telParam}&nombre=${encodeURIComponent(nombreParam)}&forzar=true`)
+          .then(res => res.json())
+          .then(data => {
+              if (data.ok && data.yaRegistrado) {
+                  window.HB_STATE.clienteId = data.id;
+                  window.HB_STATE.saldoActual = data.saldo;
+                  entrarAlDashboard(); // Entra directo sin pedir código
+              } else {
+                  iniciarProcesoOTP(telParam, true); // Fallback por si algo falla
+              }
+          });
+    } else {
+        iniciarProcesoOTP(telParam, true);
+    }
   } else if (window.HB_STATE.clienteId) {
     entrarAlDashboard();
   } else {

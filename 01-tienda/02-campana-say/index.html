@@ -17,7 +17,6 @@
 <header class="topbar">
   <div class="container topbar-inner">
     <a class="logo" href="#inicio">🥚 <span>Huevo<b>Bueno</b></span></a>
-    <!-- CAMBIO: ZACOALCO -> SAYULA -->
     <div class="topbar-badge">SOLO SAYULA <span>• REPARTO JUEVES</span></div>
   </div>
 </header>
@@ -27,7 +26,6 @@
   <section class="hero">
     <div class="container hero-grid">
       <div class="hero-text">
-        <!-- CAMBIO: ZACOALCO -> SAYULA -->
         <p class="eyebrow">🥚 SAYULA &nbsp;•&nbsp; ENTREGA A DOMICILIO</p>
         <h1>Deja de comprar huevo <span class="strike">rezagado</span> en la tiendita.</h1>
         <p class="hero-sub">Recibe <strong>huevo de granja recién puesto</strong> directo en tu puerta cada jueves. Grande, seleccionado y con <strong>máximo 3 días de postura.</strong></p>
@@ -40,11 +38,9 @@
 
         <div class="urgency">
           <span class="pulse"></span>
-          <!-- CAMBIO: LUNES -> JUEVES -->
           <p><strong>Reparto exclusivo todos los JUEVES.</strong> Cupo limitado por capacidad de ruta semanal. Si se llena tu colonia, te toca esperar al siguiente jueves.</p>
         </div>
 
-        <!-- CAMBIO: LUNES -> JUEVES -->
         <a class="btn btn-big" href="#pedido">SÍ, QUIERO MI HUEVO FRESCO EL JUEVES ↓</a>
         <p class="microtrust">✓ Sin anticipo &nbsp;•&nbsp; ✓ Sin salir de casa &nbsp;•&nbsp; ✓ Sin cargar bolsas pesadas</p>
       </div>
@@ -110,13 +106,12 @@
       <div class="trust-cards">
         <article><span>💵</span><h3>Pago contra entrega</h3><p>Pagas en tu puerta, en efectivo o transferencia, cuando ya viste tu huevo. <strong>Cero riesgo al pedir.</strong></p></article>
         <article><span>🚚</span><h3>Sin local, sin vueltas</h3><p>Venta directa de granja a tu casa. Sin intermediarios, sin bodegas, sin semanas de espera.</p></article>
-        <!-- CAMBIO: ZACOALCO -> SAYULA -->
         <article><span>📍</span><h3>Solo Sayula</h3><p>Reparto exclusivo en Sayula. Conocemos tu colonia y tu ruta.</p></article>
       </div>
     </div>
   </section>
 
-  <!-- TESTIMONIOS (Adaptados a Sayula) -->
+  <!-- TESTIMONIOS -->
   <section class="section">
     <div class="container">
       <p class="kicker">VECINOS QUE YA CAMBIARON</p>
@@ -133,7 +128,6 @@
   <section class="section order" id="pedido">
     <div class="container order-grid">
       <div>
-        <!-- CAMBIO: LUNES -> JUEVES -->
         <p class="kicker">APARTA TU LUGAR EN LA RUTA DEL JUEVES</p>
         <h2>Apártalo en menos de 1 minuto</h2>
         <p class="section-intro">Llena el formulario. Te confirmamos por WhatsApp tu lugar en la ruta y el jueves te lo llevamos a tu puerta.</p>
@@ -142,16 +136,13 @@
           <li><b>2. Déjanos tu dirección</b> <span>Colonia y referencias claras.</span></li>
           <li><b>3. Paga al recibir</b> <span>Efectivo o transferencia en tu puerta.</span></li>
         </ol>
-        <!-- CAMBIO: ZACOALCO -> SAYULA -->
         <div class="route-note">📦 <div><b>Ruta del jueves — Sayula</b><br>Entregas en orden de registro. Entre más pronto apartes, más pronto te toca.</div></div>
       </div>
 
-      <!-- FORMULARIO ORIGINAL INYECTADO -->
       <form id="pedido-form" class="form-custom" novalidate>
         <h3>🛒 Tu pedido — HuevoBueno</h3>
         <p class="form-sub">Pago contra entrega el jueves • Envío sin costo extra</p>
 
-        <!-- CANDADO GEOGRÁFICO: SAYULA -->
         <div class="field-custom">
           <label>Ciudad de entrega</label>
           <input type="text" value="Sayula" readonly style="background-color: #F7FAFC; cursor: not-allowed; color: #4A5568; font-weight: 700; border-color: #E2E8F0;">
@@ -212,7 +203,6 @@
           <strong id="total-display">$75.00</strong>
         </div>
 
-        <!-- CAMBIO: LUNES -> JUEVES -->
         <button type="submit" class="btn-submit-custom" id="btn-submit">
           SÍ, QUIERO MI HUEVO FRESCO EL JUEVES
         </button>
@@ -223,13 +213,14 @@
   <footer>
     <div class="container footer-inner">
       <p><strong>🥚 HuevoBueno</strong> — Huevo de granja seleccionado, máximo 3 días de postura.</p>
-      <!-- CAMBIO: ZACOALCO -> SAYULA -->
       <p>Reparto exclusivo: <b>Sayula, Jalisco • Todos los jueves</b> • Garantía Cero Rotos</p>
     </div>
   </footer>
 </main>
 
-<script src="../js/config.js"></script>
-<script src="../js/script.js"></script>
+<!-- RUTAS CORREGIDAS: Scripts locales para config y script, global para tracking -->
+<script src="js/config.js"></script>
+<script src="js/script.js"></script>
+<script src="../js/tracking.js"></script>
 </body>
 </html>

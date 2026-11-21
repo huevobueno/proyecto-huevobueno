@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HuevoBueno | Despensa Completa a domicilio</title>
+<meta name="description" content="Recibe huevo fresco y tu despensa completa directo en tu puerta. Pago contra entrega.">
+<meta name="theme-color" content="#0E4D36">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="container topbar-inner">
+    <a class="logo" href="#inicio">🥚 <span>Huevo<b>Bueno</b></span></a>
+    <div class="topbar-badge">AHORRA EN DESPENSA <span>• ENTREGA A DOMICILIO</span></div>
+  </div>
+</header>
+
+<main id="inicio">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-text">
+        <p class="eyebrow">🥚 SUR DE JALISCO &nbsp;•&nbsp; ENTREGA A DOMICILIO</p>
+        <h1>Deja de cargar bolsas pesadas. <span class="strike">Compra tu despensa completa.</span></h1>
+        <p class="hero-sub">Recibe <strong>huevo de granja recién puesto</strong> y tu despensa de la semana directo en tu puerta. <strong>Sin filas y pagando al recibir.</strong></p>
+
+        <div class="hero-proof">
+          <div><strong>Envío $0</strong><span>a tu puerta</span></div>
+          <div><strong>Pago al recibir</strong><span>efectivo o transf.</span></div>
+          <div><strong>Ahorro real</strong><span>vs tiendita</span></div>
+        </div>
+
+        <a class="btn btn-big" href="#pedido">SÍ, QUIERO MI DESPENSA ↓</a>
+        <p class="microtrust">✓ Sin anticipo &nbsp;•&nbsp; ✓ Sin salir de casa &nbsp;•&nbsp; ✓ Garantía Cero Rotos</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMULARIO -->
+  <section class="section order" id="pedido">
+    <div class="container order-grid">
+      <div>
+        <p class="kicker">APARTA TU LUGAR EN LA RUTA</p>
+        <h2>Apártalo en menos de 1 minuto</h2>
+        <p class="section-intro">Llena el formulario. Te confirmamos por WhatsApp tu lugar en la ruta y te lo llevamos a tu puerta.</p>
+        <ol class="steps">
+          <li><b>1. Elige tu paquete</b> <span>El total se calcula solo.</span></li>
+          <li><b>2. Déjanos tu dirección</b> <span>Colonia y referencias claras.</span></li>
+          <li><b>3. Paga al recibir</b> <span>Efectivo o transferencia en tu puerta.</span></li>
+        </ol>
+      </div>
+
+      <!-- FORMULARIO -->
+      <form id="pedido-form" class="form-custom" novalidate>
+        <h3>🛒 Tu pedido — HuevoBueno</h3>
+        <p class="form-sub">Pago contra entrega • Envío sin costo extra</p>
+
+        <div class="field-custom">
+          <label>Ciudad de entrega *</label>
+          <select id="ciudad" required style="width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px;">
+            <option value="" disabled selected>Selecciona tu ciudad</option>
+            <option value="Sayula">Sayula</option>
+            <option value="Zacoalco">Zacoalco</option>
+            <option value="Atoyac">Atoyac</option>
+            <option value="Techaluta">Techaluta</option>
+            <option value="Teocuitatlán">Teocuitatlán</option>
+          </select>
+        </div>
+
+        <div class="field-custom">
+          <label>Nombre completo *</label>
+          <input type="text" id="nombre" required placeholder="Ej. María González López">
+        </div>
+        
+        <div class="field-custom">
+          <label>WhatsApp (10 dígitos) *</label>
+          <input type="tel" id="tel" required pattern="[0-9]{10}" maxlength="10" placeholder="Ej. 333 123 4567">
+        </div>
+        
+        <div class="field-custom">
+          <label>Colonia o sector *</label>
+          <input type="text" id="colonia" required placeholder="Ej. Centro, Las Cebollas">
+        </div>
+        
+        <div class="field-custom">
+          <label>Dirección exacta + referencias *</label>
+          <input type="text" id="direccion" required placeholder="Calle, número, entre calles, color de casa">
+        </div>
+
+        <!-- SELECTOR DE PRODUCTOS -->
+        <div class="productos-custom">
+          <div class="prod-item" id="card-carteras">
+            <div class="prod-info-custom">
+              <strong>Cartera de 30 huevos</strong>
+              <span id="lbl-precio-cartera">$85.00</span>
+            </div>
+            <div class="qty-control-custom">
+              <button type="button" class="qty-btn-custom" onclick="cambiarCantidad('carteras', -1)">−</button>
+              <input type="number" id="cant-carteras" value="1" readonly>
+              <button type="button" class="qty-btn-custom" onclick="cambiarCantidad('carteras', 1)">+</button>
+            </div>
+          </div>
+          
+          <div class="prod-item" id="card-cajas">
+            <div class="prod-info-custom">
+              <strong>Caja completa 360 huevos</strong>
+              <span id="lbl-precio-caja">$850.00</span>
+            </div>
+            <div class="qty-control-custom">
+              <button type="button" class="qty-btn-custom" onclick="cambiarCantidad('cajas', -1)">−</button>
+              <input type="number" id="cant-cajas" value="0" readonly>
+              <button type="button" class="qty-btn-custom" onclick="cambiarCantidad('cajas', 1)">+</button>
+            </div>
+          </div>
+
+          <!-- NUEVO: DESPENSA -->
+          <div class="prod-item" id="card-despensas" style="border: 2px dashed #E67E22; background: #FFFDF7; position: relative; margin-top: 15px;">
+            <div style="position: absolute; top: -10px; right: 15px; background: #E67E22; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: bold;">
+              🔥 NUEVO COMBO
+            </div>
+            <div class="prod-info-custom">
+              <strong>Despensa Completa</strong>
+              <span style="font-size: 0.75rem; color: #666; display: block; margin-top: 4px;">Huevo (30), Papel (4), Azúcar (1kg), Frijol (1kg)</span>
+              <span id="lbl-precio-despensa" style="color: #E67E22; margin-top: 8px; display: block;">$200.00</span>
+            </div>
+            <div class="qty-control-custom">
+              <button type="button" class="qty-btn-custom" onclick="cambiarCantidad('despensas', -1)">−</button>
+              <input type="number" id="cant-despensas" value="0" readonly>
+              <button type="button" class="qty-btn-custom" onclick="cambiarCantidad('despensas', 1)">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TOTAL Y BOTÓN VERDE -->
+        <div class="total-box-custom">
+          <div>
+            <span>Total a pagar:</span>
+            <small>Pagas en efectivo al recibir</small>
+          </div>
+          <strong id="total-display">$85.00</strong>
+        </div>
+
+        <button type="submit" class="btn-submit-custom" id="btn-submit">
+          SÍ, QUIERO MI PEDIDO
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container footer-inner">
+      <p><strong>🥚 HuevoBueno</strong> — Huevo de granja y despensa a domicilio.</p>
+      <p>Garantía Cero Rotos • Pago contra entrega</p>
+    </div>
+  </footer>
+</main>
+
+<script src="../js/config.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>

@@ -1,9 +1,9 @@
 const CONFIG = {
-  // URL del Backend de Afiliados
-  API_URL: "https://script.google.com/macros/s/AKfycbzP7Ip699VKx9cpx_dzpSPPrk_BCiXIHNtYmfrXuq4eDlmOEe4ayt0aNjiaRWDCGnH74A/exec",
+  // URL del Backend de la Tienda (01-script-tienda)
+  API_URL: "https://script.google.com/macros/s/AKfycbxkzNqhyUHiMTSL2x0F9suld3kTyMJWrKJaGB2B0i9edR9yPoGx5YWbCIiIuj5FcyFhLw/exec",
   
-  // URL del Backend de Tracking (Versión 6 confirmada)
-  TRACKING_URL: "https://script.google.com/macros/s/AKfycbzj-x2UlURWA_5x2CN3r7eKyHdjwFn8CheV0o4rYoJEtdJ-y2Q9iAEek21hnHP1ca-wSA/exec",
+  // URL del Backend de Tracking (01-traking-tienda)
+  TRACKING_URL: "https://script.google.com/macros/s/AKfycbwVfkd-OVwCg35EWc0liv1NtoZAO-pqJS6n5By_hOTbty5Il2lkRlPJWFtQOt--MM6_Tg/exec",
   
   // Número de soporte
   WHATSAPP_SOPORTE: "523325110628",

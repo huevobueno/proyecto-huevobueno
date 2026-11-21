@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HuevoBueno | Huevo fresco a domicilio en Zacoalco</title>
-  <meta property="og:image" content="https://huevobueno.github.io/proyecto-huevobueno/01-tienda/01-campana-zac/img/mini-zacoalco-75.jpeg">
+<meta property="og:image" content="https://huevobueno.github.io/proyecto-huevobueno/01-tienda/01-campana-zac/img/mini-zacoalco-75.jpeg">
 <meta name="description" content="Recibe huevo de granja recién puesto, directo en tu puerta cada lunes en Zacoalco. Pago contra entrega. Garantía Cero Rotos.">
 <meta name="theme-color" content="#0E4D36">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -53,7 +53,6 @@
           <li><b>Cascarón fuerte</b>, seleccionado uno por uno.</li>
           <li><b>Tamaño grande</b>, parejo en toda la cartera.</li>
         </ul>
-        <!-- PRECIO DINÁMICO DEL HERO -->
         <div class="hero-card-price">Desde <strong id="heroPrice">$75</strong> <span>por cartera de 30 huevos*</span></div>
         <p class="tiny">*El total exacto se calcula abajo según tu paquete. Pago contra entrega.</p>
       </aside>
@@ -125,7 +124,7 @@
     </div>
   </section>
 
-  <!-- FORMULARIO (FUSIÓN QUIRÚRGICA) -->
+  <!-- FORMULARIO -->
   <section class="section order" id="pedido">
     <div class="container order-grid">
       <div>
@@ -140,7 +139,6 @@
         <div class="route-note">📦 <div><b>Ruta del lunes — Zacoalco</b><br>Entregas en orden de registro. Entre más pronto apartes, más pronto te toca.</div></div>
       </div>
 
-      <!-- NUESTRO FORMULARIO ORIGINAL INYECTADO -->
       <form id="pedido-form" class="form-custom" novalidate>
         <h3>🛒 Tu pedido — HuevoBueno</h3>
         <p class="form-sub">Pago contra entrega el lunes • Envío sin costo extra</p>
@@ -172,7 +170,6 @@
           <input type="text" id="direccion" required placeholder="Calle, número, entre calles, color de casa">
         </div>
 
-        <!-- SELECTOR DE PRODUCTOS CON BOTONES -->
         <div class="productos-custom">
           <div class="prod-item" id="card-carteras">
             <div class="prod-info-custom">
@@ -199,7 +196,6 @@
           </div>
         </div>
 
-        <!-- TOTAL Y BOTÓN VERDE -->
         <div class="total-box-custom">
           <div>
             <span>Total a pagar:</span>
@@ -223,7 +219,11 @@
   </footer>
 </main>
 
-<script src="../js/config.js"></script>
+<!-- CARGAMOS LOS SCRIPTS EN ORDEN -->
+<script src="js/config.js"></script>
 <script src="js/script.js"></script>
+<!-- ESTE ES EL TRACKING GENERAL QUE YA SABE LEER LA VARIABLE CAMPANA -->
+
+<script src="../js/tracking.js"></script>
 </body>
 </html>

@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const refAfiliado = urlParams.get('ref') || 'DIRECTO';
   
-  let precioCartera = 85;
-  let precioCaja = 850;
+  let precioCartera = 75;
+  let precioCaja = 650;
   let cantCarteras = 1; 
   let cantCajas = 0;
   let enviandoPedido = false; 
@@ -11,18 +11,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   const btnSubmit = document.getElementById('btn-submit');
   const formPedido = document.getElementById('pedido-form');
 
-  // Cargar precios dinámicos desde Google Sheets (Super Admin)
+  // Cargar precios dinámicos desde Google Sheets (Super Admin) por POST para evitar CORS
   try {
-    const res = await fetch(`${CONFIG.API_URL}?action=config_publica`);
+    const res = await fetch(CONFIG.API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: "config_publica" })
+    });
     const data = await res.json();
+    
     if (data.ok && data.config) {
       precioCartera = Number(data.config.Precio_Cartera) || precioCartera;
       precioCaja = Number(data.config.Precio_Caja) || precioCaja;
       
-      // Actualizamos los precios en la pantalla
-      document.getElementById('lbl-precio-cartera').innerText = `$${precioCartera.toFixed(2)}`;
-      document.getElementById('lbl-precio-caja').innerText = `$${precioCaja.toFixed(2)}`;
-      document.getElementById('heroPrice').innerText = `$${precioCartera.toFixed(0)}`;
+      if(document.getElementById('lbl-precio-cartera')) document.getElementById('lbl-precio-cartera').innerText = `$${precioCartera.toFixed(2)}`;
+      if(document.getElementById('lbl-precio-caja')) document.getElementById('lbl-precio-caja').innerText = `$${precioCaja.toFixed(2)}`;
+      if(document.getElementById('heroPrice')) document.getElementById('heroPrice').innerText = `$${precioCartera.toFixed(0)}`;
       
       actualizarTotal();
     }
@@ -45,7 +49,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function actualizarTotal() {
     const total = (cantCarteras * precioCartera) + (cantCajas * precioCaja);
-    document.getElementById('total-display').textContent = `$${total.toFixed(2)}`;
+    if(document.getElementById('total-display')) {
+        document.getElementById('total-display').textContent = `$${total.toFixed(2)}`;
+    }
   }
 
   if (formPedido) {
@@ -57,14 +63,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       enviandoPedido = true;
       const btnTextoOriginal = btnSubmit.innerHTML;
       
-      btnSubmit.textContent = "Enviando pedido...";
+      btnSubmit.textContent = "Enviando WhatsApp...";
       btnSubmit.disabled = true;
 
       const total = (cantCarteras * precioCartera) + (cantCajas * precioCaja);
-      
-      // FORZADO PARA ZACOALCO
       const ciudad = "Zacoalco"; 
       const diaEntrega = "Lunes"; 
+      const campana = "Zacoalco";
       
       const colonia = document.getElementById('colonia').value.trim();
       const direccion = document.getElementById('direccion').value.trim();
@@ -72,7 +77,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const tel = document.getElementById('tel').value.trim();
 
       const payload = {
-        action: "crear_pedido_landing",
+        action: "enviar_confirmacion_whatsapp", 
         ciudad: ciudad,
         diaEntrega: diaEntrega,
         nombre: nombre,
@@ -82,7 +87,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         cantCarteras: cantCarteras,
         cantCajas: cantCajas,
         total: total,
-        ref: refAfiliado
+        ref: refAfiliado,
+        campana: campana
       };
 
       try {
@@ -95,19 +101,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await res.json();
 
         if (data.ok) {
-          const params = new URLSearchParams({
-            folio: data.idPedido,
-            total: total,
-            tel: payload.tel,
-            nombre: payload.nombre,
-            ciudad: payload.ciudad,
-            colonia: payload.colonia,
-            direccion: payload.direccion,
-            diaEntrega: diaEntrega,
-            ref: refAfiliado
-          }).toString();
-          
-          window.location.href = `../gracias.html?${params}`;
+            formPedido.style.display = 'none';
+            const exitoDiv = document.createElement('div');
+            exitoDiv.style.padding = '40px 20px';
+            exitoDiv.style.textAlign = 'center';
+            exitoDiv.style.backgroundColor = '#F0FAF4';
+            exitoDiv.style.borderRadius = '16px';
+            exitoDiv.style.border = '2px solid #0E5C3F';
+            exitoDiv.innerHTML = `
+                <h2 style="color: #0E5C3F; margin-bottom: 15px;">¡Ya casi terminamos!</h2>
+                <p style="font-size: 1.2rem; color: #333; margin-bottom: 10px;">Hemos enviado un mensaje a tu WhatsApp.</p>
+                <p style="font-size: 1rem; color: #666;">Por favor, abre tu WhatsApp y presiona el botón <strong>"Confirmar Pedido"</strong> para completar tu orden.</p>
+            `;
+            formPedido.parentNode.appendChild(exitoDiv);
         } else {
           alert("Error del servidor: " + (data.error || "No se pudo procesar el pedido."));
           btnSubmit.innerHTML = btnTextoOriginal;

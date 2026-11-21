@@ -1,12 +1,10 @@
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
   const refAfiliado = urlParams.get('ref') || 'DIRECTO';
   
   const yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  let precioCartera = CONFIG.PRECIO_CARTERA_DEFAULT || 85;
-  let precioCaja = CONFIG.PRECIO_CAJA_DEFAULT || 650;
   let cantCarteras = 1; 
   let cantCajas = 0;
   let enviandoPedido = false; 
@@ -31,22 +29,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (selectCiudad) selectCiudad.addEventListener('change', actualizarTextoBoton);
   actualizarTextoBoton();
 
-  try {
-    const res = await fetch(`${CONFIG.API_URL}?action=config_publica`);
-    const data = await res.json();
-    if (data.ok && data.config) {
-      precioCartera = Number(data.config.Precio_Cartera) || precioCartera;
-      precioCaja = Number(data.config.Precio_Caja) || precioCaja;
-      
-      if(document.getElementById('lbl-precio-cartera')) document.getElementById('lbl-precio-cartera').innerHTML = `$${precioCartera} <small>c/u</small>`;
-      if(document.getElementById('lbl-precio-caja')) document.getElementById('lbl-precio-caja').innerHTML = `$${precioCaja} <small>c/u</small>`;
-      actualizarTotal();
-    }
-  } catch (e) { console.error("Error cargando precios:", e); }
-
   if(document.getElementById('cant-carteras')) document.getElementById('cant-carteras').value = cantCarteras;
   if(document.getElementById('cant-cajas')) document.getElementById('cant-cajas').value = cantCajas;
-  actualizarTotal();
+  
+  document.addEventListener('preciosListos', () => { actualizarTotal(); });
+  setTimeout(actualizarTotal, 500); 
 
   window.cambiarCantidad = (tipo, cambio) => {
     if (tipo === 'carteras') {
@@ -64,7 +51,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
 
   function actualizarTotal() {
-    const total = (cantCarteras * precioCartera) + (cantCajas * precioCaja);
+    if(!window.HB_PRECIOS) return;
+    const total = (cantCarteras * window.HB_PRECIOS.cartera) + (cantCajas * window.HB_PRECIOS.caja);
     if(document.getElementById('total-display')) {
         document.getElementById('total-display').textContent = `$${total.toLocaleString('es-MX')}`;
     }
@@ -79,14 +67,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       enviandoPedido = true;
       const btnTextoOriginal = btnSubmit.innerHTML;
       
-      // --- BLOQUEO EXTREMO DEL BOTÓN ---
-      btnSubmit.textContent = "Enviando pedido...";
+      btnSubmit.textContent = "Enviando WhatsApp...";
       btnSubmit.disabled = true;
       btnSubmit.style.opacity = "0.5";
       btnSubmit.style.pointerEvents = "none";
-      // ---------------------------------
 
-      const total = (cantCarteras * precioCartera) + (cantCajas * precioCaja);
+      const total = (cantCarteras * window.HB_PRECIOS.cartera) + (cantCajas * window.HB_PRECIOS.caja);
       const ciudad = selectCiudad.value;
       const colonia = document.getElementById('colonia').value.trim();
       const direccion = document.getElementById('direccion').value.trim();
@@ -99,7 +85,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       else if (ciudad === "Teocuitatlán") diaEntrega = "Martes";
 
       const payload = {
-        action: "crear_pedido_landing",
+        action: "enviar_confirmacion_whatsapp", 
         ciudad: ciudad,
         diaEntrega: diaEntrega,
         nombre: nombre,
@@ -109,7 +95,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         cantCarteras: cantCarteras,
         cantCajas: cantCajas,
         total: total,
-        ref: refAfiliado
+        ref: refAfiliado,
+        campana: "General" 
       };
 
       try {
@@ -122,21 +109,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await res.json();
 
         if (data.ok) {
-          const params = new URLSearchParams({
-            folio: data.idPedido,
-            total: total,
-            tel: payload.tel,
-            nombre: payload.nombre,
-            ciudad: payload.ciudad,
-            colonia: payload.colonia,
-            direccion: payload.direccion,
-            diaEntrega: diaEntrega,
-            ref: refAfiliado
-          }).toString();
-          
-          window.location.href = `gracias.html?${params}`;
+            // OCULTAMOS EL FORMULARIO Y MOSTRAMOS MENSAJE DE ÉXITO
+            formPedido.style.display = 'none';
+            const exitoDiv = document.createElement('div');
+            exitoDiv.style.padding = '40px 20px';
+            exitoDiv.style.textAlign = 'center';
+            exitoDiv.style.backgroundColor = '#F0FAF4';
+            exitoDiv.style.borderRadius = '16px';
+            exitoDiv.style.border = '2px solid #0E5C3F';
+            exitoDiv.innerHTML = `
+                <h2 style="color: #0E5C3F; margin-bottom: 15px;">¡Ya casi terminamos!</h2>
+                <p style="font-size: 1.2rem; color: #333; margin-bottom: 10px;">Hemos enviado un mensaje a tu WhatsApp.</p>
+                <p style="font-size: 1rem; color: #666;">Por favor, abre tu WhatsApp y presiona el botón <strong>"Confirmar Pedido"</strong> para completar tu orden.</p>
+            `;
+            formPedido.parentNode.appendChild(exitoDiv);
         } else {
-          alert("Error del servidor: " + (data.error || "No se pudo procesar el pedido."));
+          alert("Error: " + (data.error || "No se pudo enviar el WhatsApp."));
           btnSubmit.innerHTML = btnTextoOriginal;
           btnSubmit.disabled = false;
           btnSubmit.style.opacity = "1";
